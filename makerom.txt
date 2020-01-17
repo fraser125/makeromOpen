@@ -1,0 +1,3766 @@
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 1
+
+
+   1              		.file	"makerom.c"
+   2              		.text
+   3              		.comm	arg_struct, 96, 5
+   4              		.comm	parsed_spec, 16, 4
+   5              		.comm	conversion_int, 4, 2
+   6              		.globl	define_str
+   7              		.section .rdata,"dr"
+   8              	.LC0:
+   9 0000 00       		.ascii "\0"
+  10              		.data
+  11              		.align 8
+  12              	define_str:
+  13 0000 00000000 		.quad	.LC0
+  13      00000000 
+  14              		.globl	include_str
+  15              		.align 8
+  16              	include_str:
+  17 0008 00000000 		.quad	.LC0
+  17      00000000 
+  18              		.globl	bootstrap_file
+  19              		.section .rdata,"dr"
+  20              	.LC1:
+  21 0001 426F6F74 		.ascii "Boot\0"
+  21      00
+  22              		.data
+  23              		.align 8
+  24              	bootstrap_file:
+  25 0010 01000000 		.quad	.LC1
+  25      00000000 
+  26              		.globl	romheader_file
+  27              		.section .rdata,"dr"
+  28              	.LC2:
+  29 0006 726F6D68 		.ascii "romheader\0"
+  29      65616465 
+  29      7200
+  30              		.data
+  31              		.align 8
+  32              	romheader_file:
+  33 0018 06000000 		.quad	.LC2
+  33      00000000 
+  34              		.globl	pif_file
+  35              		.section .rdata,"dr"
+  36              	.LC3:
+  37 0010 70696632 		.ascii "pif2Boot\0"
+  37      426F6F74 
+  37      00
+  38              		.data
+  39              		.align 8
+  40              	pif_file:
+  41 0020 10000000 		.quad	.LC3
+  41      00000000 
+  42              		.globl	font_file
+  43              		.section .rdata,"dr"
+  44              	.LC4:
+  45 0019 666F6E74 		.ascii "font\0"
+  45      00
+  46              		.data
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 2
+
+
+  47              		.align 8
+  48              	font_file:
+  49 0028 19000000 		.quad	.LC4
+  49      00000000 
+  50              		.globl	output_file
+  51              		.section .rdata,"dr"
+  52              	.LC5:
+  53 001e 726F6D00 		.ascii "rom\0"
+  54              		.data
+  55              		.align 8
+  56              	output_file:
+  57 0030 1E000000 		.quad	.LC5
+  57      00000000 
+  58              		.globl	symbol_file
+  59              		.align 8
+  60              	symbol_file:
+  61 0038 00000000 		.quad	.LC0
+  61      00000000 
+  62              		.globl	spec_file
+  63              		.section .rdata,"dr"
+  64              	.LC6:
+  65 0022 73706563 		.ascii "spec\0"
+  65      00
+  66              		.data
+  67              		.align 8
+  68              	spec_file:
+  69 0040 22000000 		.quad	.LC6
+  69      00000000 
+  70              		.globl	directory_str
+  71              		.align 8
+  72              	directory_str:
+  73 0048 00000000 		.quad	.LC0
+  73      00000000 
+  74              		.globl	resource_directory
+  75              		.align 8
+  76              	resource_directory:
+  77 0050 00000000 		.quad	.LC0
+  77      00000000 
+  78              		.comm	counter, 4, 2
+  79 0058 00000000 		.text
+  79      00000000 
+  80              		.globl	fpeek
+  81              		.def	fpeek;	.scl	2;	.type	32;	.endef
+  82              		.seh_proc	fpeek
+  83              	fpeek:
+  84 0000 55       		pushq	%rbp
+  85              		.seh_pushreg	%rbp
+  86 0001 4889E5   		movq	%rsp, %rbp
+  87              		.seh_setframe	%rbp, 0
+  88 0004 4883EC30 		subq	$48, %rsp
+  89              		.seh_stackalloc	48
+  90              		.seh_endprologue
+  91 0008 48894D10 		movq	%rcx, 16(%rbp)
+  92 000c 488B4D10 		movq	16(%rbp), %rcx
+  93 0010 E8000000 		call	fgetc
+  93      00
+  94 0015 8945FC   		movl	%eax, -4(%rbp)
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 3
+
+
+  95 0018 8B45FC   		movl	-4(%rbp), %eax
+  96 001b 488B5510 		movq	16(%rbp), %rdx
+  97 001f 89C1     		movl	%eax, %ecx
+  98 0021 E8000000 		call	ungetc
+  98      00
+  99 0026 8B45FC   		movl	-4(%rbp), %eax
+ 100 0029 4883C430 		addq	$48, %rsp
+ 101 002d 5D       		popq	%rbp
+ 102 002e C3       		ret
+ 103              		.seh_endproc
+ 104              		.globl	mystrcat
+ 105              		.def	mystrcat;	.scl	2;	.type	32;	.endef
+ 106              		.seh_proc	mystrcat
+ 107              	mystrcat:
+ 108 002f 55       		pushq	%rbp
+ 109              		.seh_pushreg	%rbp
+ 110 0030 4889E5   		movq	%rsp, %rbp
+ 111              		.seh_setframe	%rbp, 0
+ 112              		.seh_endprologue
+ 113 0033 48894D10 		movq	%rcx, 16(%rbp)
+ 114 0037 48895518 		movq	%rdx, 24(%rbp)
+ 115 003b EB05     		jmp	.L4
+ 116              	.L5:
+ 117 003d 48834510 		addq	$1, 16(%rbp)
+ 117      01
+ 118              	.L4:
+ 119 0042 488B4510 		movq	16(%rbp), %rax
+ 120 0046 0FB600   		movzbl	(%rax), %eax
+ 121 0049 84C0     		testb	%al, %al
+ 122 004b 75F0     		jne	.L5
+ 123 004d 90       		nop
+ 124              	.L6:
+ 125 004e 488B5518 		movq	24(%rbp), %rdx
+ 126 0052 488D4201 		leaq	1(%rdx), %rax
+ 127 0056 48894518 		movq	%rax, 24(%rbp)
+ 128 005a 488B4510 		movq	16(%rbp), %rax
+ 129 005e 488D4801 		leaq	1(%rax), %rcx
+ 130 0062 48894D10 		movq	%rcx, 16(%rbp)
+ 131 0066 0FB612   		movzbl	(%rdx), %edx
+ 132 0069 8810     		movb	%dl, (%rax)
+ 133 006b 0FB600   		movzbl	(%rax), %eax
+ 134 006e 84C0     		testb	%al, %al
+ 135 0070 75DC     		jne	.L6
+ 136 0072 48836D10 		subq	$1, 16(%rbp)
+ 136      01
+ 137 0077 488B4510 		movq	16(%rbp), %rax
+ 138 007b 5D       		popq	%rbp
+ 139 007c C3       		ret
+ 140              		.seh_endproc
+ 141              		.section .rdata,"dr"
+ 142              	.LC7:
+ 143 0027 09737061 		.ascii "\11spawning status %d\12\0"
+ 143      776E696E 
+ 143      67207374 
+ 143      61747573 
+ 143      2025640A 
+ 144              	.LC8:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 4
+
+
+ 145 003c 09657865 		.ascii "\11execute status %d\12\0"
+ 145      63757465 
+ 145      20737461 
+ 145      74757320 
+ 145      25640A00 
+ 146              		.text
+ 147              		.globl	exec_and_wait
+ 148              		.def	exec_and_wait;	.scl	2;	.type	32;	.endef
+ 149              		.seh_proc	exec_and_wait
+ 150              	exec_and_wait:
+ 151 007d 55       		pushq	%rbp
+ 152              		.seh_pushreg	%rbp
+ 153 007e 4889E5   		movq	%rsp, %rbp
+ 154              		.seh_setframe	%rbp, 0
+ 155 0081 4883EC30 		subq	$48, %rsp
+ 156              		.seh_stackalloc	48
+ 157              		.seh_endprologue
+ 158 0085 48894D10 		movq	%rcx, 16(%rbp)
+ 159 0089 48895518 		movq	%rdx, 24(%rbp)
+ 160 008d C745FC00 		movl	$0, -4(%rbp)
+ 160      000000
+ 161 0094 8B45FC   		movl	-4(%rbp), %eax
+ 162 0097 89C2     		movl	%eax, %edx
+ 163 0099 488D0D27 		leaq	.LC7(%rip), %rcx
+ 163      000000
+ 164 00a0 E8000000 		call	printf
+ 164      00
+ 165 00a5 488B4518 		movq	24(%rbp), %rax
+ 166 00a9 4989C0   		movq	%rax, %r8
+ 167 00ac 488B5510 		movq	16(%rbp), %rdx
+ 168 00b0 B9000000 		movl	$0, %ecx
+ 168      00
+ 169 00b5 E8000000 		call	spawnvp
+ 169      00
+ 170 00ba 8945FC   		movl	%eax, -4(%rbp)
+ 171 00bd 837DFC00 		cmpl	$0, -4(%rbp)
+ 172 00c1 740A     		je	.L9
+ 173 00c3 B9000000 		movl	$0, %ecx
+ 173      00
+ 174 00c8 E8000000 		call	perror
+ 174      00
+ 175              	.L9:
+ 176 00cd 8B45FC   		movl	-4(%rbp), %eax
+ 177 00d0 89C2     		movl	%eax, %edx
+ 178 00d2 488D0D3C 		leaq	.LC8(%rip), %rcx
+ 178      000000
+ 179 00d9 E8000000 		call	printf
+ 179      00
+ 180 00de 8B45FC   		movl	-4(%rbp), %eax
+ 181 00e1 4883C430 		addq	$48, %rsp
+ 182 00e5 5D       		popq	%rbp
+ 183 00e6 C3       		ret
+ 184              		.seh_endproc
+ 185              		.section .rdata,"dr"
+ 186              	.LC9:
+ 187 0050 0946696C 		.ascii "\11Filename : %s\12\0"
+ 187      656E616D 
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 5
+
+
+ 187      65203A20 
+ 187      25730A00 
+ 188              	.LC10:
+ 189 0060 0946696C 		.ascii "\11File Exists: %d\12\0"
+ 189      65204578 
+ 189      69737473 
+ 189      3A202564 
+ 189      0A00
+ 190              	.LC11:
+ 191 0072 0946696C 		.ascii "\11File Read : %d\12\0"
+ 191      65205265 
+ 191      6164203A 
+ 191      2025640A 
+ 191      00
+ 192              	.LC12:
+ 193 0083 0946696C 		.ascii "\11File Write : %d\12\0"
+ 193      65205772 
+ 193      69746520 
+ 193      3A202564 
+ 193      0A00
+ 194              	.LC13:
+ 195 0095 0946696C 		.ascii "\11File Execute : %d\12\0"
+ 195      65204578 
+ 195      65637574 
+ 195      65203A20 
+ 195      25640A00 
+ 196              		.text
+ 197              		.globl	file_exists
+ 198              		.def	file_exists;	.scl	2;	.type	32;	.endef
+ 199              		.seh_proc	file_exists
+ 200              	file_exists:
+ 201 00e7 55       		pushq	%rbp
+ 202              		.seh_pushreg	%rbp
+ 203 00e8 4889E5   		movq	%rsp, %rbp
+ 204              		.seh_setframe	%rbp, 0
+ 205 00eb 4883EC20 		subq	$32, %rsp
+ 206              		.seh_stackalloc	32
+ 207              		.seh_endprologue
+ 208 00ef 48894D10 		movq	%rcx, 16(%rbp)
+ 209 00f3 895518   		movl	%edx, 24(%rbp)
+ 210 00f6 488B5510 		movq	16(%rbp), %rdx
+ 211 00fa 488D0D50 		leaq	.LC9(%rip), %rcx
+ 211      000000
+ 212 0101 E8000000 		call	printf
+ 212      00
+ 213 0106 BA000000 		movl	$0, %edx
+ 213      00
+ 214 010b 488B4D10 		movq	16(%rbp), %rcx
+ 215 010f E8000000 		call	access
+ 215      00
+ 216 0114 83C001   		addl	$1, %eax
+ 217 0117 89C2     		movl	%eax, %edx
+ 218 0119 488D0D60 		leaq	.LC10(%rip), %rcx
+ 218      000000
+ 219 0120 E8000000 		call	printf
+ 219      00
+ 220 0125 BA040000 		movl	$4, %edx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 6
+
+
+ 220      00
+ 221 012a 488B4D10 		movq	16(%rbp), %rcx
+ 222 012e E8000000 		call	access
+ 222      00
+ 223 0133 83C001   		addl	$1, %eax
+ 224 0136 89C2     		movl	%eax, %edx
+ 225 0138 488D0D72 		leaq	.LC11(%rip), %rcx
+ 225      000000
+ 226 013f E8000000 		call	printf
+ 226      00
+ 227 0144 BA020000 		movl	$2, %edx
+ 227      00
+ 228 0149 488B4D10 		movq	16(%rbp), %rcx
+ 229 014d E8000000 		call	access
+ 229      00
+ 230 0152 83C001   		addl	$1, %eax
+ 231 0155 89C2     		movl	%eax, %edx
+ 232 0157 488D0D83 		leaq	.LC12(%rip), %rcx
+ 232      000000
+ 233 015e E8000000 		call	printf
+ 233      00
+ 234 0163 BA010000 		movl	$1, %edx
+ 234      00
+ 235 0168 488B4D10 		movq	16(%rbp), %rcx
+ 236 016c E8000000 		call	access
+ 236      00
+ 237 0171 83C001   		addl	$1, %eax
+ 238 0174 89C2     		movl	%eax, %edx
+ 239 0176 488D0D95 		leaq	.LC13(%rip), %rcx
+ 239      000000
+ 240 017d E8000000 		call	printf
+ 240      00
+ 241 0182 8B4518   		movl	24(%rbp), %eax
+ 242 0185 89C2     		movl	%eax, %edx
+ 243 0187 488B4D10 		movq	16(%rbp), %rcx
+ 244 018b E8000000 		call	access
+ 244      00
+ 245 0190 83F8FF   		cmpl	$-1, %eax
+ 246 0193 0F95C0   		setne	%al
+ 247 0196 4883C420 		addq	$32, %rsp
+ 248 019a 5D       		popq	%rbp
+ 249 019b C3       		ret
+ 250              		.seh_endproc
+ 251              		.globl	file_exists_path
+ 252              		.def	file_exists_path;	.scl	2;	.type	32;	.endef
+ 253              		.seh_proc	file_exists_path
+ 254              	file_exists_path:
+ 255 019c 55       		pushq	%rbp
+ 256              		.seh_pushreg	%rbp
+ 257 019d 4889E5   		movq	%rsp, %rbp
+ 258              		.seh_setframe	%rbp, 0
+ 259 01a0 4883EC20 		subq	$32, %rsp
+ 260              		.seh_stackalloc	32
+ 261              		.seh_endprologue
+ 262 01a4 48894D10 		movq	%rcx, 16(%rbp)
+ 263 01a8 895518   		movl	%edx, 24(%rbp)
+ 264 01ab 8B4518   		movl	24(%rbp), %eax
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 7
+
+
+ 265 01ae 89C2     		movl	%eax, %edx
+ 266 01b0 488B4D10 		movq	16(%rbp), %rcx
+ 267 01b4 E82EFFFF 		call	file_exists
+ 267      FF
+ 268 01b9 4883C420 		addq	$32, %rsp
+ 269 01bd 5D       		popq	%rbp
+ 270 01be C3       		ret
+ 271              		.seh_endproc
+ 272              		.section .rdata,"dr"
+ 273              	.LC14:
+ 274 00a9 5C00     		.ascii "\\\0"
+ 275              	.LC15:
+ 276 00ab 09504154 		.ascii "\11PATH MAX: %d\12\0"
+ 276      48204D41 
+ 276      583A2025 
+ 276      640A00
+ 277              	.LC16:
+ 278 00ba 0946696C 		.ascii "\11File name: %s\12\0"
+ 278      65206E61 
+ 278      6D653A20 
+ 278      25730A00 
+ 279              	.LC17:
+ 280 00ca 0946696C 		.ascii "\11File name length: %d\12\0"
+ 280      65206E61 
+ 280      6D65206C 
+ 280      656E6774 
+ 280      683A2025 
+ 281              	.LC18:
+ 282 00e1 09437572 		.ascii "\11Current working dir: %s\12\0"
+ 282      72656E74 
+ 282      20776F72 
+ 282      6B696E67 
+ 282      20646972 
+ 283              	.LC19:
+ 284 00fb 09646972 		.ascii "\11dir name length: %d\12\0"
+ 284      206E616D 
+ 284      65206C65 
+ 284      6E677468 
+ 284      3A202564 
+ 285              	.LC20:
+ 286 0111 09506174 		.ascii "\11Path is Null %d\12\0"
+ 286      68206973 
+ 286      204E756C 
+ 286      6C202564 
+ 286      0A00
+ 287              	.LC21:
+ 288 0123 0946756C 		.ascii "\11Full dir and file: %s\12\0"
+ 288      6C206469 
+ 288      7220616E 
+ 288      64206669 
+ 288      6C653A20 
+ 289              		.text
+ 290              		.globl	file_exists_current_dir
+ 291              		.def	file_exists_current_dir;	.scl	2;	.type	32;	.endef
+ 292              		.seh_proc	file_exists_current_dir
+ 293              	file_exists_current_dir:
+ 294 01bf 55       		pushq	%rbp
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 8
+
+
+ 295              		.seh_pushreg	%rbp
+ 296 01c0 4881EC50 		subq	$336, %rsp
+ 296      010000
+ 297              		.seh_stackalloc	336
+ 298 01c7 488DAC24 		leaq	128(%rsp), %rbp
+ 298      80000000 
+ 299              		.seh_setframe	%rbp, 128
+ 300              		.seh_endprologue
+ 301 01cf 48898DE0 		movq	%rcx, 224(%rbp)
+ 301      000000
+ 302 01d6 8995E800 		movl	%edx, 232(%rbp)
+ 302      0000
+ 303 01dc BA000000 		movl	$0, %edx
+ 303      00
+ 304 01e1 B9000000 		movl	$0, %ecx
+ 304      00
+ 305 01e6 E8000000 		call	getcwd
+ 305      00
+ 306 01eb 488985C8 		movq	%rax, 200(%rbp)
+ 306      000000
+ 307 01f2 488D45A0 		leaq	-96(%rbp), %rax
+ 308 01f6 488985C0 		movq	%rax, 192(%rbp)
+ 308      000000
+ 309 01fd C645A000 		movb	$0, -96(%rbp)
+ 310 0201 488D05A9 		leaq	.LC14(%rip), %rax
+ 310      000000
+ 311 0208 488985B8 		movq	%rax, 184(%rbp)
+ 311      000000
+ 312 020f 488B95C8 		movq	200(%rbp), %rdx
+ 312      000000
+ 313 0216 488B85C0 		movq	192(%rbp), %rax
+ 313      000000
+ 314 021d 4889C1   		movq	%rax, %rcx
+ 315 0220 E80AFEFF 		call	mystrcat
+ 315      FF
+ 316 0225 488985C0 		movq	%rax, 192(%rbp)
+ 316      000000
+ 317 022c 488B95B8 		movq	184(%rbp), %rdx
+ 317      000000
+ 318 0233 488B85C0 		movq	192(%rbp), %rax
+ 318      000000
+ 319 023a 4889C1   		movq	%rax, %rcx
+ 320 023d E8EDFDFF 		call	mystrcat
+ 320      FF
+ 321 0242 488985C0 		movq	%rax, 192(%rbp)
+ 321      000000
+ 322 0249 488B85C0 		movq	192(%rbp), %rax
+ 322      000000
+ 323 0250 488B95E0 		movq	224(%rbp), %rdx
+ 323      000000
+ 324 0257 4889C1   		movq	%rax, %rcx
+ 325 025a E8D0FDFF 		call	mystrcat
+ 325      FF
+ 326 025f 488985C0 		movq	%rax, 192(%rbp)
+ 326      000000
+ 327 0266 488B8DE0 		movq	224(%rbp), %rcx
+ 327      000000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 9
+
+
+ 328 026d E8000000 		call	strlen
+ 328      00
+ 329 0272 8985B400 		movl	%eax, 180(%rbp)
+ 329      0000
+ 330 0278 488B85C8 		movq	200(%rbp), %rax
+ 330      000000
+ 331 027f 4889C1   		movq	%rax, %rcx
+ 332 0282 E8000000 		call	strlen
+ 332      00
+ 333 0287 8985B000 		movl	%eax, 176(%rbp)
+ 333      0000
+ 334 028d BA040100 		movl	$260, %edx
+ 334      00
+ 335 0292 488D0DAB 		leaq	.LC15(%rip), %rcx
+ 335      000000
+ 336 0299 E8000000 		call	printf
+ 336      00
+ 337 029e 488B95E0 		movq	224(%rbp), %rdx
+ 337      000000
+ 338 02a5 488D0DBA 		leaq	.LC16(%rip), %rcx
+ 338      000000
+ 339 02ac E8000000 		call	printf
+ 339      00
+ 340 02b1 8B85B400 		movl	180(%rbp), %eax
+ 340      0000
+ 341 02b7 89C2     		movl	%eax, %edx
+ 342 02b9 488D0DCA 		leaq	.LC17(%rip), %rcx
+ 342      000000
+ 343 02c0 E8000000 		call	printf
+ 343      00
+ 344 02c5 488B85C8 		movq	200(%rbp), %rax
+ 344      000000
+ 345 02cc 4889C2   		movq	%rax, %rdx
+ 346 02cf 488D0DE1 		leaq	.LC18(%rip), %rcx
+ 346      000000
+ 347 02d6 E8000000 		call	printf
+ 347      00
+ 348 02db 8B85B000 		movl	176(%rbp), %eax
+ 348      0000
+ 349 02e1 89C2     		movl	%eax, %edx
+ 350 02e3 488D0DFB 		leaq	.LC19(%rip), %rcx
+ 350      000000
+ 351 02ea E8000000 		call	printf
+ 351      00
+ 352 02ef 4883BDC0 		cmpq	$0, 192(%rbp)
+ 352      00000000 
+ 353 02f7 0F94C0   		sete	%al
+ 354 02fa 0FB6C0   		movzbl	%al, %eax
+ 355 02fd 89C2     		movl	%eax, %edx
+ 356 02ff 488D0D11 		leaq	.LC20(%rip), %rcx
+ 356      010000
+ 357 0306 E8000000 		call	printf
+ 357      00
+ 358 030b 488D45A0 		leaq	-96(%rbp), %rax
+ 359 030f 4889C2   		movq	%rax, %rdx
+ 360 0312 488D0D23 		leaq	.LC21(%rip), %rcx
+ 360      010000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 10
+
+
+ 361 0319 E8000000 		call	printf
+ 361      00
+ 362 031e 8B95E800 		movl	232(%rbp), %edx
+ 362      0000
+ 363 0324 488D45A0 		leaq	-96(%rbp), %rax
+ 364 0328 4889C1   		movq	%rax, %rcx
+ 365 032b E8B7FDFF 		call	file_exists
+ 365      FF
+ 366 0330 4881C450 		addq	$336, %rsp
+ 366      010000
+ 367 0337 5D       		popq	%rbp
+ 368 0338 C3       		ret
+ 369              		.seh_endproc
+ 370              		.section .rdata,"dr"
+ 371              	.LC22:
+ 372 013b 0A095365 		.ascii "\12\11Segment:\0"
+ 372      676D656E 
+ 372      743A00
+ 373              	.LC23:
+ 374 0146 09096E61 		.ascii "\11\11name: %s\12\0"
+ 374      6D653A20 
+ 374      25730A00 
+ 375              	.LC24:
+ 376 0152 09096164 		.ascii "\11\11address: %d\12\0"
+ 376      64726573 
+ 376      733A2025 
+ 376      640A00
+ 377              	.LC25:
+ 378 0161 0909616C 		.ascii "\11\11align: %d\12\0"
+ 378      69676E3A 
+ 378      2025640A 
+ 378      00
+ 379              	.LC26:
+ 380 016e 0909666C 		.ascii "\11\11flags: %d\12\0"
+ 380      6167733A 
+ 380      2025640A 
+ 380      00
+ 381              	.LC27:
+ 382 017b 09096D61 		.ascii "\11\11maxsize: %d\12\0"
+ 382      7873697A 
+ 382      653A2025 
+ 382      640A00
+ 383              	.LC28:
+ 384 018a 09096E75 		.ascii "\11\11number: %d\12\0"
+ 384      6D626572 
+ 384      3A202564 
+ 384      0A00
+ 385              	.LC29:
+ 386 0198 09096166 		.ascii "\11\11after: %s\12\0"
+ 386      7465723A 
+ 386      2025730A 
+ 386      00
+ 387              	.LC30:
+ 388 01a5 0909656E 		.ascii "\11\11entry: %s\12\0"
+ 388      7472793A 
+ 388      2025730A 
+ 388      00
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 11
+
+
+ 389              	.LC31:
+ 390 01b2 09097374 		.ascii "\11\11stack: %s\12\0"
+ 390      61636B3A 
+ 390      2025730A 
+ 390      00
+ 391              	.LC32:
+ 392 01bf 0909696E 		.ascii "\11\11includes:\0"
+ 392      636C7564 
+ 392      65733A00 
+ 393              	.LC33:
+ 394 01cb 09090920 		.ascii "\11\11\11 %s\12\0"
+ 394      25730A00 
+ 395              	.LC34:
+ 396 01d3 09096E65 		.ascii "\11\11next: %p\12\0"
+ 396      78743A20 
+ 396      25700A00 
+ 397              		.text
+ 398              		.globl	print_segment
+ 399              		.def	print_segment;	.scl	2;	.type	32;	.endef
+ 400              		.seh_proc	print_segment
+ 401              	print_segment:
+ 402 0339 55       		pushq	%rbp
+ 403              		.seh_pushreg	%rbp
+ 404 033a 4889E5   		movq	%rsp, %rbp
+ 405              		.seh_setframe	%rbp, 0
+ 406 033d 4883EC30 		subq	$48, %rsp
+ 407              		.seh_stackalloc	48
+ 408              		.seh_endprologue
+ 409 0341 48894D10 		movq	%rcx, 16(%rbp)
+ 410 0345 488D0D3B 		leaq	.LC22(%rip), %rcx
+ 410      010000
+ 411 034c E8000000 		call	puts
+ 411      00
+ 412 0351 488B4510 		movq	16(%rbp), %rax
+ 413 0355 4883C050 		addq	$80, %rax
+ 414 0359 4889C2   		movq	%rax, %rdx
+ 415 035c 488D0D46 		leaq	.LC23(%rip), %rcx
+ 415      010000
+ 416 0363 E8000000 		call	printf
+ 416      00
+ 417 0368 488B4510 		movq	16(%rbp), %rax
+ 418 036c 8B00     		movl	(%rax), %eax
+ 419 036e 89C2     		movl	%eax, %edx
+ 420 0370 488D0D52 		leaq	.LC24(%rip), %rcx
+ 420      010000
+ 421 0377 E8000000 		call	printf
+ 421      00
+ 422 037c 488B4510 		movq	16(%rbp), %rax
+ 423 0380 8B4004   		movl	4(%rax), %eax
+ 424 0383 89C2     		movl	%eax, %edx
+ 425 0385 488D0D61 		leaq	.LC25(%rip), %rcx
+ 425      010000
+ 426 038c E8000000 		call	printf
+ 426      00
+ 427 0391 488B4510 		movq	16(%rbp), %rax
+ 428 0395 8B4008   		movl	8(%rax), %eax
+ 429 0398 89C2     		movl	%eax, %edx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 12
+
+
+ 430 039a 488D0D6E 		leaq	.LC26(%rip), %rcx
+ 430      010000
+ 431 03a1 E8000000 		call	printf
+ 431      00
+ 432 03a6 488B4510 		movq	16(%rbp), %rax
+ 433 03aa 8B400C   		movl	12(%rax), %eax
+ 434 03ad 89C2     		movl	%eax, %edx
+ 435 03af 488D0D7B 		leaq	.LC27(%rip), %rcx
+ 435      010000
+ 436 03b6 E8000000 		call	printf
+ 436      00
+ 437 03bb 488B4510 		movq	16(%rbp), %rax
+ 438 03bf 8B4010   		movl	16(%rax), %eax
+ 439 03c2 89C2     		movl	%eax, %edx
+ 440 03c4 488D0D8A 		leaq	.LC28(%rip), %rcx
+ 440      010000
+ 441 03cb E8000000 		call	printf
+ 441      00
+ 442 03d0 488B4510 		movq	16(%rbp), %rax
+ 443 03d4 4883C014 		addq	$20, %rax
+ 444 03d8 4889C2   		movq	%rax, %rdx
+ 445 03db 488D0D98 		leaq	.LC29(%rip), %rcx
+ 445      010000
+ 446 03e2 E8000000 		call	printf
+ 446      00
+ 447 03e7 488B4510 		movq	16(%rbp), %rax
+ 448 03eb 4883C032 		addq	$50, %rax
+ 449 03ef 4889C2   		movq	%rax, %rdx
+ 450 03f2 488D0DA5 		leaq	.LC30(%rip), %rcx
+ 450      010000
+ 451 03f9 E8000000 		call	printf
+ 451      00
+ 452 03fe 488B4510 		movq	16(%rbp), %rax
+ 453 0402 4883C06E 		addq	$110, %rax
+ 454 0406 4889C2   		movq	%rax, %rdx
+ 455 0409 488D0DB2 		leaq	.LC31(%rip), %rcx
+ 455      010000
+ 456 0410 E8000000 		call	printf
+ 456      00
+ 457 0415 488D0DBF 		leaq	.LC32(%rip), %rcx
+ 457      010000
+ 458 041c E8000000 		call	puts
+ 458      00
+ 459 0421 C745FC00 		movl	$0, -4(%rbp)
+ 459      000000
+ 460 0428 EB5F     		jmp	.L18
+ 461              	.L20:
+ 462 042a 488B4D10 		movq	16(%rbp), %rcx
+ 463 042e 8B45FC   		movl	-4(%rbp), %eax
+ 464 0431 4863D0   		movslq	%eax, %rdx
+ 465 0434 4889D0   		movq	%rdx, %rax
+ 466 0437 48C1E004 		salq	$4, %rax
+ 467 043b 4829D0   		subq	%rdx, %rax
+ 468 043e 4801C0   		addq	%rax, %rax
+ 469 0441 4801C8   		addq	%rcx, %rax
+ 470 0444 4805C800 		addq	$200, %rax
+ 470      0000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 13
+
+
+ 471 044a 0FB600   		movzbl	(%rax), %eax
+ 472 044d 84C0     		testb	%al, %al
+ 473 044f 7434     		je	.L19
+ 474 0451 8B45FC   		movl	-4(%rbp), %eax
+ 475 0454 4863D0   		movslq	%eax, %rdx
+ 476 0457 4889D0   		movq	%rdx, %rax
+ 477 045a 48C1E004 		salq	$4, %rax
+ 478 045e 4829D0   		subq	%rdx, %rax
+ 479 0461 4801C0   		addq	%rax, %rax
+ 480 0464 488D90C0 		leaq	192(%rax), %rdx
+ 480      000000
+ 481 046b 488B4510 		movq	16(%rbp), %rax
+ 482 046f 4801D0   		addq	%rdx, %rax
+ 483 0472 4883C008 		addq	$8, %rax
+ 484 0476 4889C2   		movq	%rax, %rdx
+ 485 0479 488D0DCB 		leaq	.LC33(%rip), %rcx
+ 485      010000
+ 486 0480 E8000000 		call	printf
+ 486      00
+ 487              	.L19:
+ 488 0485 8345FC01 		addl	$1, -4(%rbp)
+ 489              	.L18:
+ 490 0489 837DFC0A 		cmpl	$10, -4(%rbp)
+ 491 048d 7E9B     		jle	.L20
+ 492 048f 488B4510 		movq	16(%rbp), %rax
+ 493 0493 488B80F8 		movq	504(%rax), %rax
+ 493      010000
+ 494 049a 4889C2   		movq	%rax, %rdx
+ 495 049d 488D0DD3 		leaq	.LC34(%rip), %rcx
+ 495      010000
+ 496 04a4 E8000000 		call	printf
+ 496      00
+ 497 04a9 90       		nop
+ 498 04aa 4883C430 		addq	$48, %rsp
+ 499 04ae 5D       		popq	%rbp
+ 500 04af C3       		ret
+ 501              		.seh_endproc
+ 502              		.section .rdata,"dr"
+ 503 01df 00       		.align 8
+ 504              	.LC35:
+ 505 01e0 75736167 		.ascii "usage:%s [option(s)] specfile\15\12\0"
+ 505      653A2573 
+ 505      205B6F70 
+ 505      74696F6E 
+ 505      2873295D 
+ 506              	.LC36:
+ 507 0200 36344444 		.ascii "64DD\15\0"
+ 507      0D00
+ 508 0206 0000     		.align 8
+ 509              	.LC37:
+ 510 0208 092D4444 		.ascii "\11-DD64         : set DD64 mode (makedisk mode)\15\0"
+ 510      36342020 
+ 510      20202020 
+ 510      2020203A 
+ 510      20736574 
+ 511              		.align 8
+ 512              	.LC38:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 14
+
+
+ 513 0238 092D743C 		.ascii "\11-t<disktype>  : set disk type ( Only use DD64 mode )\15\0"
+ 513      6469736B 
+ 513      74797065 
+ 513      3E20203A 
+ 513      20736574 
+ 514              	.LC39:
+ 515 026f 50617373 		.ascii "Passed to gcc\15\0"
+ 515      65642074 
+ 515      6F206763 
+ 515      630D00
+ 516 027e 0000     		.align 8
+ 517              	.LC40:
+ 518 0280 092D446E 		.ascii "\11-Dname[=def]  : passed to cpp for use during its invocation\15\0"
+ 518      616D655B 
+ 518      3D646566 
+ 518      5D20203A 
+ 518      20706173 
+ 519 02be 0000     		.align 8
+ 520              	.LC41:
+ 521 02c0 092D4964 		.ascii "\11-Idirectory   : passed to cpp for use during its invocation\15\0"
+ 521      69726563 
+ 521      746F7279 
+ 521      2020203A 
+ 521      20706173 
+ 522 02fe 0000     		.align 8
+ 523              	.LC42:
+ 524 0300 092D556E 		.ascii "\11-Uname        : passed to cpp for use during its invocation\15\0"
+ 524      616D6520 
+ 524      20202020 
+ 524      2020203A 
+ 524      20706173 
+ 525              	.LC43:
+ 526 033e 466C6167 		.ascii "Flags\15\0"
+ 526      730D00
+ 527 0345 000000   		.align 8
+ 528              	.LC44:
+ 529 0348 092D6420 		.ascii "\11-d            : debug mode ( don't remove temporary files )\15\0"
+ 529      20202020 
+ 529      20202020 
+ 529      2020203A 
+ 529      20646562 
+ 530 0386 0000     		.align 8
+ 531              	.LC45:
+ 532 0388 092D4520 		.ascii "\11-E            : link error(undef. symbol) stop mode\15\0"
+ 532      20202020 
+ 532      20202020 
+ 532      2020203A 
+ 532      206C696E 
+ 533 03be 0000     		.align 8
+ 534              	.LC46:
+ 535 03c0 092D6D20 		.ascii "\11-m            : print a link editor map to stdout\15\0"
+ 535      20202020 
+ 535      20202020 
+ 535      2020203A 
+ 535      20707269 
+ 536 03f4 00000000 		.align 8
+ 537              	.LC47:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 15
+
+
+ 538 03f8 092D6F20 		.ascii "\11-o            : provided for compatibility with other tools\15\0"
+ 538      20202020 
+ 538      20202020 
+ 538      2020203A 
+ 538      2070726F 
+ 539 0436 0000     		.align 8
+ 540              	.LC48:
+ 541 0438 092D7720 		.ascii "\11-w            : disable overlay warning display\15\0"
+ 541      20202020 
+ 541      20202020 
+ 541      2020203A 
+ 541      20646973 
+ 542              	.LC49:
+ 543 046a 46696C65 		.ascii "Files\15\0"
+ 543      730D00
+ 544 0471 00000000 		.align 8
+ 544      000000
+ 545              	.LC50:
+ 546 0478 092D623C 		.ascii "\11-b<filename>  : set bootstrap file     [Boot]\15\0"
+ 546      66696C65 
+ 546      6E616D65 
+ 546      3E20203A 
+ 546      20736574 
+ 547              		.align 8
+ 548              	.LC51:
+ 549 04a8 092D683C 		.ascii "\11-h<filename>  : set romheader file     [romheader]\15\0"
+ 549      66696C65 
+ 549      6E616D65 
+ 549      3E20203A 
+ 549      20736574 
+ 550 04dd 000000   		.align 8
+ 551              	.LC52:
+ 552 04e0 092D703C 		.ascii "\11-p<filename>  : set pif bootstrap file [pif2Boot]\15\0"
+ 552      66696C65 
+ 552      6E616D65 
+ 552      3E20203A 
+ 552      20736574 
+ 553 0514 00000000 		.align 8
+ 554              	.LC53:
+ 555 0518 092D463C 		.ascii "\11-F<filename>  : set font file          [font]\15\0"
+ 555      66696C65 
+ 555      6E616D65 
+ 555      3E20203A 
+ 555      20736574 
+ 556              		.align 8
+ 557              	.LC54:
+ 558 0548 092D4C3C 		.ascii "\11-L<directory> : set resource directory [/usr/lib/PR]\15\0"
+ 558      64697265 
+ 558      63746F72 
+ 558      793E203A 
+ 558      20736574 
+ 559 057f 00       		.align 8
+ 560              	.LC55:
+ 561 0580 092D723C 		.ascii "\11-r<filename>  : set output file        [rom]\15\0"
+ 561      66696C65 
+ 561      6E616D65 
+ 561      3E20203A 
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 16
+
+
+ 561      20736574 
+ 562 05af 00       		.align 8
+ 563              	.LC56:
+ 564 05b0 092D653C 		.ascii "\11-e<filename>  : set output symbol file\15\0"
+ 564      66696C65 
+ 564      6E616D65 
+ 564      3E20203A 
+ 564      20736574 
+ 565 05d9 00000000 		.align 8
+ 565      000000
+ 566              	.LC57:
+ 567 05e0 09403C66 		.ascii "\11@<filename>   : specify indirect file \15\0"
+ 567      696C656E 
+ 567      616D653E 
+ 567      2020203A 
+ 567      20737065 
+ 568              	.LC58:
+ 569 0609 4F707469 		.ascii "Options\15\0"
+ 569      6F6E730D 
+ 569      00
+ 570 0612 00000000 		.align 8
+ 570      0000
+ 571              	.LC59:
+ 572 0618 092D733C 		.ascii "\11-s<romsize>   : set minimum rom size (Mbits)\15\0"
+ 572      726F6D73 
+ 572      697A653E 
+ 572      2020203A 
+ 572      20736574 
+ 573              	.LC60:
+ 574 0647 656E7669 		.ascii "environment\15\0"
+ 574      726F6E6D 
+ 574      656E740D 
+ 574      00
+ 575 0654 00000000 		.align 8
+ 576              	.LC61:
+ 577 0658 094D494C 		.ascii "\11MILD_OPT      : passed to ld\15\0"
+ 577      445F4F50 
+ 577      54202020 
+ 577      2020203A 
+ 577      20706173 
+ 578 0677 00       		.align 8
+ 579              	.LC62:
+ 580 0678 09474343 		.ascii "\11GCCDIR        : tool directory $(GCCDIR)/mipse/bin\15\0"
+ 580      44495220 
+ 580      20202020 
+ 580      2020203A 
+ 580      20746F6F 
+ 581 06ad 000000   		.align 8
+ 582              	.LC63:
+ 583 06b0 0954454D 		.ascii "\11TEMP          : temporary directory\15\0"
+ 583      50202020 
+ 583      20202020 
+ 583      2020203A 
+ 583      2074656D 
+ 584              		.text
+ 585              		.globl	usage
+ 586              		.def	usage;	.scl	2;	.type	32;	.endef
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 17
+
+
+ 587              		.seh_proc	usage
+ 588              	usage:
+ 589 04b0 55       		pushq	%rbp
+ 590              		.seh_pushreg	%rbp
+ 591 04b1 4889E5   		movq	%rsp, %rbp
+ 592              		.seh_setframe	%rbp, 0
+ 593 04b4 4883EC20 		subq	$32, %rsp
+ 594              		.seh_stackalloc	32
+ 595              		.seh_endprologue
+ 596 04b8 48894D10 		movq	%rcx, 16(%rbp)
+ 597 04bc 488B5510 		movq	16(%rbp), %rdx
+ 598 04c0 488D0DE0 		leaq	.LC35(%rip), %rcx
+ 598      010000
+ 599 04c7 E8000000 		call	printf
+ 599      00
+ 600 04cc 488D0D00 		leaq	.LC36(%rip), %rcx
+ 600      020000
+ 601 04d3 E8000000 		call	puts
+ 601      00
+ 602 04d8 488D0D08 		leaq	.LC37(%rip), %rcx
+ 602      020000
+ 603 04df E8000000 		call	puts
+ 603      00
+ 604 04e4 488D0D38 		leaq	.LC38(%rip), %rcx
+ 604      020000
+ 605 04eb E8000000 		call	puts
+ 605      00
+ 606 04f0 488D0D6F 		leaq	.LC39(%rip), %rcx
+ 606      020000
+ 607 04f7 E8000000 		call	puts
+ 607      00
+ 608 04fc 488D0D80 		leaq	.LC40(%rip), %rcx
+ 608      020000
+ 609 0503 E8000000 		call	puts
+ 609      00
+ 610 0508 488D0DC0 		leaq	.LC41(%rip), %rcx
+ 610      020000
+ 611 050f E8000000 		call	puts
+ 611      00
+ 612 0514 488D0D00 		leaq	.LC42(%rip), %rcx
+ 612      030000
+ 613 051b E8000000 		call	puts
+ 613      00
+ 614 0520 488D0D3E 		leaq	.LC43(%rip), %rcx
+ 614      030000
+ 615 0527 E8000000 		call	puts
+ 615      00
+ 616 052c 488D0D48 		leaq	.LC44(%rip), %rcx
+ 616      030000
+ 617 0533 E8000000 		call	puts
+ 617      00
+ 618 0538 488D0D88 		leaq	.LC45(%rip), %rcx
+ 618      030000
+ 619 053f E8000000 		call	puts
+ 619      00
+ 620 0544 488D0DC0 		leaq	.LC46(%rip), %rcx
+ 620      030000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 18
+
+
+ 621 054b E8000000 		call	puts
+ 621      00
+ 622 0550 488D0DF8 		leaq	.LC47(%rip), %rcx
+ 622      030000
+ 623 0557 E8000000 		call	puts
+ 623      00
+ 624 055c 488D0D38 		leaq	.LC48(%rip), %rcx
+ 624      040000
+ 625 0563 E8000000 		call	puts
+ 625      00
+ 626 0568 488D0D6A 		leaq	.LC49(%rip), %rcx
+ 626      040000
+ 627 056f E8000000 		call	puts
+ 627      00
+ 628 0574 488D0D78 		leaq	.LC50(%rip), %rcx
+ 628      040000
+ 629 057b E8000000 		call	puts
+ 629      00
+ 630 0580 488D0DA8 		leaq	.LC51(%rip), %rcx
+ 630      040000
+ 631 0587 E8000000 		call	puts
+ 631      00
+ 632 058c 488D0DE0 		leaq	.LC52(%rip), %rcx
+ 632      040000
+ 633 0593 E8000000 		call	puts
+ 633      00
+ 634 0598 488D0D18 		leaq	.LC53(%rip), %rcx
+ 634      050000
+ 635 059f E8000000 		call	puts
+ 635      00
+ 636 05a4 488D0D48 		leaq	.LC54(%rip), %rcx
+ 636      050000
+ 637 05ab E8000000 		call	puts
+ 637      00
+ 638 05b0 488D0D80 		leaq	.LC55(%rip), %rcx
+ 638      050000
+ 639 05b7 E8000000 		call	puts
+ 639      00
+ 640 05bc 488D0DB0 		leaq	.LC56(%rip), %rcx
+ 640      050000
+ 641 05c3 E8000000 		call	puts
+ 641      00
+ 642 05c8 488D0DE0 		leaq	.LC57(%rip), %rcx
+ 642      050000
+ 643 05cf E8000000 		call	puts
+ 643      00
+ 644 05d4 488D0D09 		leaq	.LC58(%rip), %rcx
+ 644      060000
+ 645 05db E8000000 		call	puts
+ 645      00
+ 646 05e0 488D0D18 		leaq	.LC59(%rip), %rcx
+ 646      060000
+ 647 05e7 E8000000 		call	puts
+ 647      00
+ 648 05ec 488D0D47 		leaq	.LC60(%rip), %rcx
+ 648      060000
+ 649 05f3 E8000000 		call	puts
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 19
+
+
+ 649      00
+ 650 05f8 488D0D58 		leaq	.LC61(%rip), %rcx
+ 650      060000
+ 651 05ff E8000000 		call	puts
+ 651      00
+ 652 0604 488D0D78 		leaq	.LC62(%rip), %rcx
+ 652      060000
+ 653 060b E8000000 		call	puts
+ 653      00
+ 654 0610 488D0DB0 		leaq	.LC63(%rip), %rcx
+ 654      060000
+ 655 0617 E8000000 		call	puts
+ 655      00
+ 656 061c 90       		nop
+ 657 061d 4883C420 		addq	$32, %rsp
+ 658 0621 5D       		popq	%rbp
+ 659 0622 C3       		ret
+ 660              		.seh_endproc
+ 661              		.section .rdata,"dr"
+ 662 06d6 0000     		.align 8
+ 663              	.LC65:
+ 664 06d8 456C6170 		.ascii "Elapsed: %f seconds to execute \12\0"
+ 664      7365643A 
+ 664      20256620 
+ 664      7365636F 
+ 664      6E647320 
+ 665              	.LC66:
+ 666 06f9 4661696C 		.ascii "Failed\0"
+ 666      656400
+ 667              		.text
+ 668              		.globl	exit_pgm
+ 669              		.def	exit_pgm;	.scl	2;	.type	32;	.endef
+ 670              		.seh_proc	exit_pgm
+ 671              	exit_pgm:
+ 672 0623 55       		pushq	%rbp
+ 673              		.seh_pushreg	%rbp
+ 674 0624 4889E5   		movq	%rsp, %rbp
+ 675              		.seh_setframe	%rbp, 0
+ 676 0627 4883EC30 		subq	$48, %rsp
+ 677              		.seh_stackalloc	48
+ 678              		.seh_endprologue
+ 679 062b 89C8     		movl	%ecx, %eax
+ 680 062d 895518   		movl	%edx, 24(%rbp)
+ 681 0630 884510   		movb	%al, 16(%rbp)
+ 682 0633 E8000000 		call	clock
+ 682      00
+ 683 0638 488D1500 		leaq	counter(%rip), %rdx
+ 683      000000
+ 684 063f 8B12     		movl	(%rdx), %edx
+ 685 0641 29D0     		subl	%edx, %eax
+ 686 0643 89C2     		movl	%eax, %edx
+ 687 0645 488D0500 		leaq	counter(%rip), %rax
+ 687      000000
+ 688 064c 8910     		movl	%edx, (%rax)
+ 689 064e 488D0500 		leaq	counter(%rip), %rax
+ 689      000000
+ 690 0655 8B00     		movl	(%rax), %eax
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 20
+
+
+ 691 0657 F20F2AC0 		cvtsi2sdl	%eax, %xmm0
+ 692 065b F20F100D 		movsd	.LC64(%rip), %xmm1
+ 692      D00C0000 
+ 693 0663 F20F5EC1 		divsd	%xmm1, %xmm0
+ 694 0667 F20F1145 		movsd	%xmm0, -8(%rbp)
+ 694      F8
+ 695 066c F20F1045 		movsd	-8(%rbp), %xmm0
+ 695      F8
+ 696 0671 488B45F8 		movq	-8(%rbp), %rax
+ 697 0675 660F28C8 		movapd	%xmm0, %xmm1
+ 698 0679 4889C2   		movq	%rax, %rdx
+ 699 067c 488D0DD8 		leaq	.LC65(%rip), %rcx
+ 699      060000
+ 700 0683 E8000000 		call	printf
+ 700      00
+ 701 0688 807D1000 		cmpb	$0, 16(%rbp)
+ 702 068c 7416     		je	.L24
+ 703 068e 488D0DF9 		leaq	.LC66(%rip), %rcx
+ 703      060000
+ 704 0695 E8000000 		call	puts
+ 704      00
+ 705 069a 8B4518   		movl	24(%rbp), %eax
+ 706 069d 89C1     		movl	%eax, %ecx
+ 707 069f E8000000 		call	exit
+ 707      00
+ 708              	.L24:
+ 709 06a4 90       		nop
+ 710 06a5 4883C430 		addq	$48, %rsp
+ 711 06a9 5D       		popq	%rbp
+ 712 06aa C3       		ret
+ 713              		.seh_endproc
+ 714              		.section .rdata,"dr"
+ 715              	.LC67:
+ 716 0700 0944652D 		.ascii "\11De-quoted string: %s\12\0"
+ 716      71756F74 
+ 716      65642073 
+ 716      7472696E 
+ 716      673A2025 
+ 717              		.text
+ 718              		.globl	remove_quotes
+ 719              		.def	remove_quotes;	.scl	2;	.type	32;	.endef
+ 720              		.seh_proc	remove_quotes
+ 721              	remove_quotes:
+ 722 06ab 55       		pushq	%rbp
+ 723              		.seh_pushreg	%rbp
+ 724 06ac 4889E5   		movq	%rsp, %rbp
+ 725              		.seh_setframe	%rbp, 0
+ 726 06af 4883EC30 		subq	$48, %rsp
+ 727              		.seh_stackalloc	48
+ 728              		.seh_endprologue
+ 729 06b3 48894D10 		movq	%rcx, 16(%rbp)
+ 730 06b7 48895518 		movq	%rdx, 24(%rbp)
+ 731 06bb C745FC00 		movl	$0, -4(%rbp)
+ 731      000000
+ 732 06c2 C745F800 		movl	$0, -8(%rbp)
+ 732      000000
+ 733 06c9 EB4F     		jmp	.L26
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 21
+
+
+ 734              	.L28:
+ 735 06cb 8B45F8   		movl	-8(%rbp), %eax
+ 736 06ce 4863D0   		movslq	%eax, %rdx
+ 737 06d1 488B4510 		movq	16(%rbp), %rax
+ 738 06d5 4801D0   		addq	%rdx, %rax
+ 739 06d8 0FB600   		movzbl	(%rax), %eax
+ 740 06db 3C22     		cmpb	$34, %al
+ 741 06dd 7437     		je	.L27
+ 742 06df 8B45F8   		movl	-8(%rbp), %eax
+ 743 06e2 4863D0   		movslq	%eax, %rdx
+ 744 06e5 488B4510 		movq	16(%rbp), %rax
+ 745 06e9 4801D0   		addq	%rdx, %rax
+ 746 06ec 0FB600   		movzbl	(%rax), %eax
+ 747 06ef 84C0     		testb	%al, %al
+ 748 06f1 7423     		je	.L27
+ 749 06f3 8B45F8   		movl	-8(%rbp), %eax
+ 750 06f6 4863D0   		movslq	%eax, %rdx
+ 751 06f9 488B4510 		movq	16(%rbp), %rax
+ 752 06fd 4801D0   		addq	%rdx, %rax
+ 753 0700 8B55FC   		movl	-4(%rbp), %edx
+ 754 0703 4863CA   		movslq	%edx, %rcx
+ 755 0706 488B5518 		movq	24(%rbp), %rdx
+ 756 070a 4801CA   		addq	%rcx, %rdx
+ 757 070d 0FB600   		movzbl	(%rax), %eax
+ 758 0710 8802     		movb	%al, (%rdx)
+ 759 0712 8345FC01 		addl	$1, -4(%rbp)
+ 760              	.L27:
+ 761 0716 8345F801 		addl	$1, -8(%rbp)
+ 762              	.L26:
+ 763 071a 488B4D10 		movq	16(%rbp), %rcx
+ 764 071e E8000000 		call	strlen
+ 764      00
+ 765 0723 3945F8   		cmpl	%eax, -8(%rbp)
+ 766 0726 7EA3     		jle	.L28
+ 767 0728 488B4518 		movq	24(%rbp), %rax
+ 768 072c 4889C2   		movq	%rax, %rdx
+ 769 072f 488D0D00 		leaq	.LC67(%rip), %rcx
+ 769      070000
+ 770 0736 E8000000 		call	printf
+ 770      00
+ 771 073b 488B4518 		movq	24(%rbp), %rax
+ 772 073f 4889C1   		movq	%rax, %rcx
+ 773 0742 E8000000 		call	strlen
+ 773      00
+ 774 0747 4883C430 		addq	$48, %rsp
+ 775 074b 5D       		popq	%rbp
+ 776 074c C3       		ret
+ 777              		.seh_endproc
+ 778              		.section .rdata,"dr"
+ 779              	.LC68:
+ 780 0717 20202564 		.ascii "  %d \0"
+ 780      2000
+ 781              	.LC69:
+ 782 071d 09576F72 		.ascii "\11Word Scan Format: %s\12\0"
+ 782      64205363 
+ 782      616E2046 
+ 782      6F726D61 
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 22
+
+
+ 782      743A2025 
+ 783              	.LC70:
+ 784 0734 09536567 		.ascii "\11Segment Struct Size: %d\12\0"
+ 784      6D656E74 
+ 784      20537472 
+ 784      75637420 
+ 784      53697A65 
+ 785              	.LC71:
+ 786 074e 09576176 		.ascii "\11Wave Struct Size: %d\12\0"
+ 786      65205374 
+ 786      72756374 
+ 786      2053697A 
+ 786      653A2025 
+ 787              	.LC72:
+ 788 0765 7200     		.ascii "r\0"
+ 789              	.LC73:
+ 790 0767 73706563 		.ascii "spec.out\0"
+ 790      2E6F7574 
+ 790      00
+ 791              	.LC74:
+ 792 0770 62656769 		.ascii "beginseg\0"
+ 792      6E736567 
+ 792      00
+ 793              	.LC75:
+ 794 0779 6E616D65 		.ascii "name\0"
+ 794      00
+ 795              	.LC76:
+ 796 077e 666C6167 		.ascii "flags\0"
+ 796      7300
+ 797              	.LC77:
+ 798 0784 09466C61 		.ascii "\11Flag '%s'\12\0"
+ 798      67202725 
+ 798      73270A00 
+ 799              	.LC78:
+ 800 0790 424F4F54 		.ascii "BOOT\0"
+ 800      00
+ 801              	.LC79:
+ 802 0795 4F424A45 		.ascii "OBJECT\0"
+ 802      435400
+ 803              	.LC80:
+ 804 079c 52415700 		.ascii "RAW\0"
+ 805              	.LC81:
+ 806 07a0 656E7472 		.ascii "entry\0"
+ 806      7900
+ 807              	.LC82:
+ 808 07a6 73746163 		.ascii "stack\0"
+ 808      6B00
+ 809              	.LC83:
+ 810 07ac 696E636C 		.ascii "include\0"
+ 810      75646500 
+ 811              	.LC84:
+ 812 07b4 6E756D62 		.ascii "number\0"
+ 812      657200
+ 813              	.LC85:
+ 814 07bb 616C6967 		.ascii "align\0"
+ 814      6E00
+ 815              	.LC86:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 23
+
+
+ 816 07c1 6D617873 		.ascii "maxsize\0"
+ 816      697A6500 
+ 817              	.LC87:
+ 818 07c9 61667465 		.ascii "after\0"
+ 818      7200
+ 819 07cf 00       		.align 8
+ 820              	.LC88:
+ 821 07d0 09556E69 		.ascii "\11Unimplemented segment word: %s\12\0"
+ 821      6D706C65 
+ 821      6D656E74 
+ 821      65642073 
+ 821      65676D65 
+ 822              	.LC89:
+ 823 07f1 656E6473 		.ascii "endseg\0"
+ 823      656700
+ 824              	.LC90:
+ 825 07f8 62656769 		.ascii "beginwave\0"
+ 825      6E776176 
+ 825      6500
+ 826              	.LC91:
+ 827 0802 09556E69 		.ascii "\11Unimplemented wave word: %s\12\0"
+ 827      6D706C65 
+ 827      6D656E74 
+ 827      65642077 
+ 827      61766520 
+ 828              	.LC92:
+ 829 0820 656E6477 		.ascii "endwave\0"
+ 829      61766500 
+ 830              	.LC93:
+ 831 0828 09556E72 		.ascii "\11Unrecognized word: %s\12\0"
+ 831      65636F67 
+ 831      6E697A65 
+ 831      6420776F 
+ 831      72643A20 
+ 832              		.text
+ 833              		.globl	parse_spec_file
+ 834              		.def	parse_spec_file;	.scl	2;	.type	32;	.endef
+ 835              		.seh_proc	parse_spec_file
+ 836              	parse_spec_file:
+ 837 074d 55       		pushq	%rbp
+ 838              		.seh_pushreg	%rbp
+ 839 074e 4889E5   		movq	%rsp, %rbp
+ 840              		.seh_setframe	%rbp, 0
+ 841 0751 4881ECA0 		subq	$160, %rsp
+ 841      000000
+ 842              		.seh_stackalloc	160
+ 843              		.seh_endprologue
+ 844 0758 C745FC00 		movl	$0, -4(%rbp)
+ 844      000000
+ 845 075f C745E81E 		movl	$30, -24(%rbp)
+ 845      000000
+ 846 0766 8B55E8   		movl	-24(%rbp), %edx
+ 847 0769 488D45AA 		leaq	-86(%rbp), %rax
+ 848 076d 4189D0   		movl	%edx, %r8d
+ 849 0770 488D1517 		leaq	.LC68(%rip), %rdx
+ 849      070000
+ 850 0777 4889C1   		movq	%rax, %rcx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 24
+
+
+ 851 077a E8000000 		call	sprintf
+ 851      00
+ 852 077f C645AB25 		movb	$37, -85(%rbp)
+ 853 0783 837DE863 		cmpl	$99, -24(%rbp)
+ 854 0787 7E06     		jle	.L31
+ 855 0789 C645AF73 		movb	$115, -81(%rbp)
+ 856 078d EB0A     		jmp	.L32
+ 857              	.L31:
+ 858 078f 837DE862 		cmpl	$98, -24(%rbp)
+ 859 0793 7F04     		jg	.L32
+ 860 0795 C645AE73 		movb	$115, -82(%rbp)
+ 861              	.L32:
+ 862 0799 488D45AA 		leaq	-86(%rbp), %rax
+ 863 079d 4889C2   		movq	%rax, %rdx
+ 864 07a0 488D0D1D 		leaq	.LC69(%rip), %rcx
+ 864      070000
+ 865 07a7 E8000000 		call	printf
+ 865      00
+ 866 07ac BA000200 		movl	$512, %edx
+ 866      00
+ 867 07b1 488D0D34 		leaq	.LC70(%rip), %rcx
+ 867      070000
+ 868 07b8 E8000000 		call	printf
+ 868      00
+ 869 07bd BA580100 		movl	$344, %edx
+ 869      00
+ 870 07c2 488D0D4E 		leaq	.LC71(%rip), %rcx
+ 870      070000
+ 871 07c9 E8000000 		call	printf
+ 871      00
+ 872 07ce 488D1565 		leaq	.LC72(%rip), %rdx
+ 872      070000
+ 873 07d5 488D0D67 		leaq	.LC73(%rip), %rcx
+ 873      070000
+ 874 07dc E8000000 		call	fopen
+ 874      00
+ 875 07e1 488945E0 		movq	%rax, -32(%rbp)
+ 876 07e5 E9EF0600 		jmp	.L33
+ 876      00
+ 877              	.L65:
+ 878 07ea C645FB00 		movb	$0, -5(%rbp)
+ 879 07ee 488D4580 		leaq	-128(%rbp), %rax
+ 880 07f2 41B80800 		movl	$8, %r8d
+ 880      0000
+ 881 07f8 488D1570 		leaq	.LC74(%rip), %rdx
+ 881      070000
+ 882 07ff 4889C1   		movq	%rax, %rcx
+ 883 0802 E8000000 		call	strncmp
+ 883      00
+ 884 0807 85C0     		testl	%eax, %eax
+ 885 0809 0F850205 		jne	.L34
+ 885      0000
+ 886 080f BA010000 		movl	$1, %edx
+ 886      00
+ 887 0814 B9000200 		movl	$512, %ecx
+ 887      00
+ 888 0819 E8000000 		call	calloc
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 25
+
+
+ 888      00
+ 889 081e 488945C8 		movq	%rax, -56(%rbp)
+ 890 0822 C745F400 		movl	$0, -12(%rbp)
+ 890      000000
+ 891 0829 488D4D80 		leaq	-128(%rbp), %rcx
+ 892 082d 488D55AA 		leaq	-86(%rbp), %rdx
+ 893 0831 488B45E0 		movq	-32(%rbp), %rax
+ 894 0835 4989C8   		movq	%rcx, %r8
+ 895 0838 4889C1   		movq	%rax, %rcx
+ 896 083b E8000000 		call	fscanf
+ 896      00
+ 897 0840 8945F0   		movl	%eax, -16(%rbp)
+ 898 0843 E9910400 		jmp	.L35
+ 898      00
+ 899              	.L56:
+ 900 0848 488D4580 		leaq	-128(%rbp), %rax
+ 901 084c 41B80400 		movl	$4, %r8d
+ 901      0000
+ 902 0852 488D1579 		leaq	.LC75(%rip), %rdx
+ 902      070000
+ 903 0859 4889C1   		movq	%rax, %rcx
+ 904 085c E8000000 		call	strncmp
+ 904      00
+ 905 0861 85C0     		testl	%eax, %eax
+ 906 0863 0F858000 		jne	.L36
+ 906      0000
+ 907 0869 488D4D80 		leaq	-128(%rbp), %rcx
+ 908 086d 488D55AA 		leaq	-86(%rbp), %rdx
+ 909 0871 488B45E0 		movq	-32(%rbp), %rax
+ 910 0875 4989C8   		movq	%rcx, %r8
+ 911 0878 4889C1   		movq	%rax, %rcx
+ 912 087b E8000000 		call	fscanf
+ 912      00
+ 913 0880 85C0     		testl	%eax, %eax
+ 914 0882 0F843104 		je	.L37
+ 914      0000
+ 915 0888 C645FB00 		movb	$0, -5(%rbp)
+ 916 088c BA010000 		movl	$1, %edx
+ 916      00
+ 917 0891 B91E0000 		movl	$30, %ecx
+ 917      00
+ 918 0896 E8000000 		call	calloc
+ 918      00
+ 919 089b 488945B0 		movq	%rax, -80(%rbp)
+ 920 089f 488B55B0 		movq	-80(%rbp), %rdx
+ 921 08a3 488D4580 		leaq	-128(%rbp), %rax
+ 922 08a7 4889C1   		movq	%rax, %rcx
+ 923 08aa E8FCFDFF 		call	remove_quotes
+ 923      FF
+ 924 08af 488B45B0 		movq	-80(%rbp), %rax
+ 925 08b3 0FB600   		movzbl	(%rax), %eax
+ 926 08b6 84C0     		testb	%al, %al
+ 927 08b8 741E     		je	.L38
+ 928 08ba 488B45C8 		movq	-56(%rbp), %rax
+ 929 08be 488D4850 		leaq	80(%rax), %rcx
+ 930 08c2 488B45B0 		movq	-80(%rbp), %rax
+ 931 08c6 41B81E00 		movl	$30, %r8d
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 26
+
+
+ 931      0000
+ 932 08cc 4889C2   		movq	%rax, %rdx
+ 933 08cf E8000000 		call	memcpy
+ 933      00
+ 934 08d4 C645FB01 		movb	$1, -5(%rbp)
+ 935              	.L38:
+ 936 08d8 488B45B0 		movq	-80(%rbp), %rax
+ 937 08dc 4889C1   		movq	%rax, %rcx
+ 938 08df E8000000 		call	free
+ 938      00
+ 939 08e4 E9D00300 		jmp	.L37
+ 939      00
+ 940              	.L36:
+ 941 08e9 488D4580 		leaq	-128(%rbp), %rax
+ 942 08ed 41B80500 		movl	$5, %r8d
+ 942      0000
+ 943 08f3 488D157E 		leaq	.LC76(%rip), %rdx
+ 943      070000
+ 944 08fa 4889C1   		movq	%rax, %rcx
+ 945 08fd E8000000 		call	strncmp
+ 945      00
+ 946 0902 85C0     		testl	%eax, %eax
+ 947 0904 0F85DC00 		jne	.L39
+ 947      0000
+ 948 090a C645FB01 		movb	$1, -5(%rbp)
+ 949 090e E9AF0000 		jmp	.L40
+ 949      00
+ 950              	.L45:
+ 951 0913 C645FB00 		movb	$0, -5(%rbp)
+ 952 0917 488D4580 		leaq	-128(%rbp), %rax
+ 953 091b 4889C2   		movq	%rax, %rdx
+ 954 091e 488D0D84 		leaq	.LC77(%rip), %rcx
+ 954      070000
+ 955 0925 E8000000 		call	printf
+ 955      00
+ 956 092a 488D4580 		leaq	-128(%rbp), %rax
+ 957 092e 41B80400 		movl	$4, %r8d
+ 957      0000
+ 958 0934 488D1590 		leaq	.LC78(%rip), %rdx
+ 958      070000
+ 959 093b 4889C1   		movq	%rax, %rcx
+ 960 093e E8000000 		call	strncmp
+ 960      00
+ 961 0943 85C0     		testl	%eax, %eax
+ 962 0945 7515     		jne	.L41
+ 963 0947 488B45C8 		movq	-56(%rbp), %rax
+ 964 094b 8B4008   		movl	8(%rax), %eax
+ 965 094e 83C802   		orl	$2, %eax
+ 966 0951 89C2     		movl	%eax, %edx
+ 967 0953 488B45C8 		movq	-56(%rbp), %rax
+ 968 0957 895008   		movl	%edx, 8(%rax)
+ 969 095a EB66     		jmp	.L40
+ 970              	.L41:
+ 971 095c 488D4580 		leaq	-128(%rbp), %rax
+ 972 0960 41B80600 		movl	$6, %r8d
+ 972      0000
+ 973 0966 488D1595 		leaq	.LC79(%rip), %rdx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 27
+
+
+ 973      070000
+ 974 096d 4889C1   		movq	%rax, %rcx
+ 975 0970 E8000000 		call	strncmp
+ 975      00
+ 976 0975 85C0     		testl	%eax, %eax
+ 977 0977 7515     		jne	.L42
+ 978 0979 488B45C8 		movq	-56(%rbp), %rax
+ 979 097d 8B4008   		movl	8(%rax), %eax
+ 980 0980 83C804   		orl	$4, %eax
+ 981 0983 89C2     		movl	%eax, %edx
+ 982 0985 488B45C8 		movq	-56(%rbp), %rax
+ 983 0989 895008   		movl	%edx, 8(%rax)
+ 984 098c EB34     		jmp	.L40
+ 985              	.L42:
+ 986 098e 488D4580 		leaq	-128(%rbp), %rax
+ 987 0992 41B80300 		movl	$3, %r8d
+ 987      0000
+ 988 0998 488D159C 		leaq	.LC80(%rip), %rdx
+ 988      070000
+ 989 099f 4889C1   		movq	%rax, %rcx
+ 990 09a2 E8000000 		call	strncmp
+ 990      00
+ 991 09a7 85C0     		testl	%eax, %eax
+ 992 09a9 0F850903 		jne	.L67
+ 992      0000
+ 993 09af 488B45C8 		movq	-56(%rbp), %rax
+ 994 09b3 8B4008   		movl	8(%rax), %eax
+ 995 09b6 83C801   		orl	$1, %eax
+ 996 09b9 89C2     		movl	%eax, %edx
+ 997 09bb 488B45C8 		movq	-56(%rbp), %rax
+ 998 09bf 895008   		movl	%edx, 8(%rax)
+ 999              	.L40:
+ 1000 09c2 488D4D80 		leaq	-128(%rbp), %rcx
+ 1001 09c6 488D55AA 		leaq	-86(%rbp), %rdx
+ 1002 09ca 488B45E0 		movq	-32(%rbp), %rax
+ 1003 09ce 4989C8   		movq	%rcx, %r8
+ 1004 09d1 4889C1   		movq	%rax, %rcx
+ 1005 09d4 E8000000 		call	fscanf
+ 1005      00
+ 1006 09d9 85C0     		testl	%eax, %eax
+ 1007 09db 0F8532FF 		jne	.L45
+ 1007      FFFF
+ 1008 09e1 E9D30200 		jmp	.L37
+ 1008      00
+ 1009              	.L39:
+ 1010 09e6 488D4580 		leaq	-128(%rbp), %rax
+ 1011 09ea 41B80500 		movl	$5, %r8d
+ 1011      0000
+ 1012 09f0 488D15A0 		leaq	.LC81(%rip), %rdx
+ 1012      070000
+ 1013 09f7 4889C1   		movq	%rax, %rcx
+ 1014 09fa E8000000 		call	strncmp
+ 1014      00
+ 1015 09ff 85C0     		testl	%eax, %eax
+ 1016 0a01 0F858400 		jne	.L46
+ 1016      0000
+ 1017 0a07 C645FB01 		movb	$1, -5(%rbp)
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 28
+
+
+ 1018 0a0b 488D4D80 		leaq	-128(%rbp), %rcx
+ 1019 0a0f 488D55AA 		leaq	-86(%rbp), %rdx
+ 1020 0a13 488B45E0 		movq	-32(%rbp), %rax
+ 1021 0a17 4989C8   		movq	%rcx, %r8
+ 1022 0a1a 4889C1   		movq	%rax, %rcx
+ 1023 0a1d E8000000 		call	fscanf
+ 1023      00
+ 1024 0a22 85C0     		testl	%eax, %eax
+ 1025 0a24 0F848F02 		je	.L37
+ 1025      0000
+ 1026 0a2a C645FB00 		movb	$0, -5(%rbp)
+ 1027 0a2e BA010000 		movl	$1, %edx
+ 1027      00
+ 1028 0a33 B91E0000 		movl	$30, %ecx
+ 1028      00
+ 1029 0a38 E8000000 		call	calloc
+ 1029      00
+ 1030 0a3d 488945B8 		movq	%rax, -72(%rbp)
+ 1031 0a41 488B55B8 		movq	-72(%rbp), %rdx
+ 1032 0a45 488D4580 		leaq	-128(%rbp), %rax
+ 1033 0a49 4889C1   		movq	%rax, %rcx
+ 1034 0a4c E85AFCFF 		call	remove_quotes
+ 1034      FF
+ 1035 0a51 488B45B8 		movq	-72(%rbp), %rax
+ 1036 0a55 0FB600   		movzbl	(%rax), %eax
+ 1037 0a58 84C0     		testb	%al, %al
+ 1038 0a5a 741E     		je	.L47
+ 1039 0a5c 488B45C8 		movq	-56(%rbp), %rax
+ 1040 0a60 488D4832 		leaq	50(%rax), %rcx
+ 1041 0a64 488B45B8 		movq	-72(%rbp), %rax
+ 1042 0a68 41B81E00 		movl	$30, %r8d
+ 1042      0000
+ 1043 0a6e 4889C2   		movq	%rax, %rdx
+ 1044 0a71 E8000000 		call	memcpy
+ 1044      00
+ 1045 0a76 C645FB01 		movb	$1, -5(%rbp)
+ 1046              	.L47:
+ 1047 0a7a 488B45B8 		movq	-72(%rbp), %rax
+ 1048 0a7e 4889C1   		movq	%rax, %rcx
+ 1049 0a81 E8000000 		call	free
+ 1049      00
+ 1050 0a86 E92E0200 		jmp	.L37
+ 1050      00
+ 1051              	.L46:
+ 1052 0a8b 488D4580 		leaq	-128(%rbp), %rax
+ 1053 0a8f 41B80500 		movl	$5, %r8d
+ 1053      0000
+ 1054 0a95 488D15A6 		leaq	.LC82(%rip), %rdx
+ 1054      070000
+ 1055 0a9c 4889C1   		movq	%rax, %rcx
+ 1056 0a9f E8000000 		call	strncmp
+ 1056      00
+ 1057 0aa4 85C0     		testl	%eax, %eax
+ 1058 0aa6 7509     		jne	.L48
+ 1059 0aa8 C645FB01 		movb	$1, -5(%rbp)
+ 1060 0aac E9080200 		jmp	.L37
+ 1060      00
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 29
+
+
+ 1061              	.L48:
+ 1062 0ab1 488D4580 		leaq	-128(%rbp), %rax
+ 1063 0ab5 41B80700 		movl	$7, %r8d
+ 1063      0000
+ 1064 0abb 488D15AC 		leaq	.LC83(%rip), %rdx
+ 1064      070000
+ 1065 0ac2 4889C1   		movq	%rax, %rcx
+ 1066 0ac5 E8000000 		call	strncmp
+ 1066      00
+ 1067 0aca 85C0     		testl	%eax, %eax
+ 1068 0acc 0F859D00 		jne	.L49
+ 1068      0000
+ 1069 0ad2 488D4D80 		leaq	-128(%rbp), %rcx
+ 1070 0ad6 488D55AA 		leaq	-86(%rbp), %rdx
+ 1071 0ada 488B45E0 		movq	-32(%rbp), %rax
+ 1072 0ade 4989C8   		movq	%rcx, %r8
+ 1073 0ae1 4889C1   		movq	%rax, %rcx
+ 1074 0ae4 E8000000 		call	fscanf
+ 1074      00
+ 1075 0ae9 85C0     		testl	%eax, %eax
+ 1076 0aeb 0F84C801 		je	.L37
+ 1076      0000
+ 1077 0af1 BA010000 		movl	$1, %edx
+ 1077      00
+ 1078 0af6 B91E0000 		movl	$30, %ecx
+ 1078      00
+ 1079 0afb E8000000 		call	calloc
+ 1079      00
+ 1080 0b00 488945C0 		movq	%rax, -64(%rbp)
+ 1081 0b04 488B55C0 		movq	-64(%rbp), %rdx
+ 1082 0b08 488D4580 		leaq	-128(%rbp), %rax
+ 1083 0b0c 4889C1   		movq	%rax, %rcx
+ 1084 0b0f E897FBFF 		call	remove_quotes
+ 1084      FF
+ 1085 0b14 488B45C0 		movq	-64(%rbp), %rax
+ 1086 0b18 0FB600   		movzbl	(%rax), %eax
+ 1087 0b1b 84C0     		testb	%al, %al
+ 1088 0b1d 743F     		je	.L50
+ 1089 0b1f 8B45F4   		movl	-12(%rbp), %eax
+ 1090 0b22 4863D0   		movslq	%eax, %rdx
+ 1091 0b25 4889D0   		movq	%rdx, %rax
+ 1092 0b28 48C1E004 		salq	$4, %rax
+ 1093 0b2c 4829D0   		subq	%rdx, %rax
+ 1094 0b2f 4801C0   		addq	%rax, %rax
+ 1095 0b32 488D90C0 		leaq	192(%rax), %rdx
+ 1095      000000
+ 1096 0b39 488B45C8 		movq	-56(%rbp), %rax
+ 1097 0b3d 4801D0   		addq	%rdx, %rax
+ 1098 0b40 488D4808 		leaq	8(%rax), %rcx
+ 1099 0b44 488B45C0 		movq	-64(%rbp), %rax
+ 1100 0b48 41B81E00 		movl	$30, %r8d
+ 1100      0000
+ 1101 0b4e 4889C2   		movq	%rax, %rdx
+ 1102 0b51 E8000000 		call	memcpy
+ 1102      00
+ 1103 0b56 8345F401 		addl	$1, -12(%rbp)
+ 1104 0b5a C645FB01 		movb	$1, -5(%rbp)
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 30
+
+
+ 1105              	.L50:
+ 1106 0b5e 488B45C0 		movq	-64(%rbp), %rax
+ 1107 0b62 4889C1   		movq	%rax, %rcx
+ 1108 0b65 E8000000 		call	free
+ 1108      00
+ 1109 0b6a E94A0100 		jmp	.L37
+ 1109      00
+ 1110              	.L49:
+ 1111 0b6f 488D4580 		leaq	-128(%rbp), %rax
+ 1112 0b73 41B80600 		movl	$6, %r8d
+ 1112      0000
+ 1113 0b79 488D15B4 		leaq	.LC84(%rip), %rdx
+ 1113      070000
+ 1114 0b80 4889C1   		movq	%rax, %rcx
+ 1115 0b83 E8000000 		call	strncmp
+ 1115      00
+ 1116 0b88 85C0     		testl	%eax, %eax
+ 1117 0b8a 755E     		jne	.L51
+ 1118 0b8c 488D4D80 		leaq	-128(%rbp), %rcx
+ 1119 0b90 488D55AA 		leaq	-86(%rbp), %rdx
+ 1120 0b94 488B45E0 		movq	-32(%rbp), %rax
+ 1121 0b98 4989C8   		movq	%rcx, %r8
+ 1122 0b9b 4889C1   		movq	%rax, %rcx
+ 1123 0b9e E8000000 		call	fscanf
+ 1123      00
+ 1124 0ba3 85C0     		testl	%eax, %eax
+ 1125 0ba5 0F840E01 		je	.L37
+ 1125      0000
+ 1126 0bab 488D4580 		leaq	-128(%rbp), %rax
+ 1127 0baf 4889C1   		movq	%rax, %rcx
+ 1128 0bb2 E8000000 		call	atoi
+ 1128      00
+ 1129 0bb7 488D1500 		leaq	conversion_int(%rip), %rdx
+ 1129      000000
+ 1130 0bbe 8902     		movl	%eax, (%rdx)
+ 1131 0bc0 488D0500 		leaq	conversion_int(%rip), %rax
+ 1131      000000
+ 1132 0bc7 8B00     		movl	(%rax), %eax
+ 1133 0bc9 85C0     		testl	%eax, %eax
+ 1134 0bcb 0F8EE800 		jle	.L37
+ 1134      0000
+ 1135 0bd1 488D0500 		leaq	conversion_int(%rip), %rax
+ 1135      000000
+ 1136 0bd8 8B10     		movl	(%rax), %edx
+ 1137 0bda 488B45C8 		movq	-56(%rbp), %rax
+ 1138 0bde 895010   		movl	%edx, 16(%rax)
+ 1139 0be1 C645FB01 		movb	$1, -5(%rbp)
+ 1140 0be5 E9CF0000 		jmp	.L37
+ 1140      00
+ 1141              	.L51:
+ 1142 0bea 488D4580 		leaq	-128(%rbp), %rax
+ 1143 0bee 41B80500 		movl	$5, %r8d
+ 1143      0000
+ 1144 0bf4 488D15BB 		leaq	.LC85(%rip), %rdx
+ 1144      070000
+ 1145 0bfb 4889C1   		movq	%rax, %rcx
+ 1146 0bfe E8000000 		call	strncmp
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 31
+
+
+ 1146      00
+ 1147 0c03 85C0     		testl	%eax, %eax
+ 1148 0c05 7509     		jne	.L52
+ 1149 0c07 C645FB01 		movb	$1, -5(%rbp)
+ 1150 0c0b E9A90000 		jmp	.L37
+ 1150      00
+ 1151              	.L52:
+ 1152 0c10 488D4580 		leaq	-128(%rbp), %rax
+ 1153 0c14 41B80700 		movl	$7, %r8d
+ 1153      0000
+ 1154 0c1a 488D15C1 		leaq	.LC86(%rip), %rdx
+ 1154      070000
+ 1155 0c21 4889C1   		movq	%rax, %rcx
+ 1156 0c24 E8000000 		call	strncmp
+ 1156      00
+ 1157 0c29 85C0     		testl	%eax, %eax
+ 1158 0c2b 7553     		jne	.L53
+ 1159 0c2d 488D4D80 		leaq	-128(%rbp), %rcx
+ 1160 0c31 488D55AA 		leaq	-86(%rbp), %rdx
+ 1161 0c35 488B45E0 		movq	-32(%rbp), %rax
+ 1162 0c39 4989C8   		movq	%rcx, %r8
+ 1163 0c3c 4889C1   		movq	%rax, %rcx
+ 1164 0c3f E8000000 		call	fscanf
+ 1164      00
+ 1165 0c44 85C0     		testl	%eax, %eax
+ 1166 0c46 7471     		je	.L37
+ 1167 0c48 488D4580 		leaq	-128(%rbp), %rax
+ 1168 0c4c 4889C1   		movq	%rax, %rcx
+ 1169 0c4f E8000000 		call	atoi
+ 1169      00
+ 1170 0c54 488D1500 		leaq	conversion_int(%rip), %rdx
+ 1170      000000
+ 1171 0c5b 8902     		movl	%eax, (%rdx)
+ 1172 0c5d 488D0500 		leaq	conversion_int(%rip), %rax
+ 1172      000000
+ 1173 0c64 8B00     		movl	(%rax), %eax
+ 1174 0c66 85C0     		testl	%eax, %eax
+ 1175 0c68 7E4F     		jle	.L37
+ 1176 0c6a 488D0500 		leaq	conversion_int(%rip), %rax
+ 1176      000000
+ 1177 0c71 8B10     		movl	(%rax), %edx
+ 1178 0c73 488B45C8 		movq	-56(%rbp), %rax
+ 1179 0c77 89500C   		movl	%edx, 12(%rax)
+ 1180 0c7a C645FB01 		movb	$1, -5(%rbp)
+ 1181 0c7e EB39     		jmp	.L37
+ 1182              	.L53:
+ 1183 0c80 488D4580 		leaq	-128(%rbp), %rax
+ 1184 0c84 41B80500 		movl	$5, %r8d
+ 1184      0000
+ 1185 0c8a 488D15C9 		leaq	.LC87(%rip), %rdx
+ 1185      070000
+ 1186 0c91 4889C1   		movq	%rax, %rcx
+ 1187 0c94 E8000000 		call	strncmp
+ 1187      00
+ 1188 0c99 85C0     		testl	%eax, %eax
+ 1189 0c9b 7506     		jne	.L54
+ 1190 0c9d C645FB01 		movb	$1, -5(%rbp)
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 32
+
+
+ 1191 0ca1 EB16     		jmp	.L37
+ 1192              	.L54:
+ 1193 0ca3 488D4580 		leaq	-128(%rbp), %rax
+ 1194 0ca7 4889C2   		movq	%rax, %rdx
+ 1195 0caa 488D0DD0 		leaq	.LC88(%rip), %rcx
+ 1195      070000
+ 1196 0cb1 E8000000 		call	printf
+ 1196      00
+ 1197 0cb6 EB01     		jmp	.L37
+ 1198              	.L67:
+ 1199 0cb8 90       		nop
+ 1200              	.L37:
+ 1201 0cb9 807DFB00 		cmpb	$0, -5(%rbp)
+ 1202 0cbd 741A     		je	.L35
+ 1203 0cbf 488D4D80 		leaq	-128(%rbp), %rcx
+ 1204 0cc3 488D55AA 		leaq	-86(%rbp), %rdx
+ 1205 0cc7 488B45E0 		movq	-32(%rbp), %rax
+ 1206 0ccb 4989C8   		movq	%rcx, %r8
+ 1207 0cce 4889C1   		movq	%rax, %rcx
+ 1208 0cd1 E8000000 		call	fscanf
+ 1208      00
+ 1209 0cd6 8945F0   		movl	%eax, -16(%rbp)
+ 1210              	.L35:
+ 1211 0cd9 837DF000 		cmpl	$0, -16(%rbp)
+ 1212 0cdd 7421     		je	.L55
+ 1213 0cdf 488D4580 		leaq	-128(%rbp), %rax
+ 1214 0ce3 41B80600 		movl	$6, %r8d
+ 1214      0000
+ 1215 0ce9 488D15F1 		leaq	.LC89(%rip), %rdx
+ 1215      070000
+ 1216 0cf0 4889C1   		movq	%rax, %rcx
+ 1217 0cf3 E8000000 		call	strncmp
+ 1217      00
+ 1218 0cf8 85C0     		testl	%eax, %eax
+ 1219 0cfa 0F8548FB 		jne	.L56
+ 1219      FFFF
+ 1220              	.L55:
+ 1221 0d00 488B45C8 		movq	-56(%rbp), %rax
+ 1222 0d04 4889C1   		movq	%rax, %rcx
+ 1223 0d07 E82DF6FF 		call	print_segment
+ 1223      FF
+ 1224 0d0c E9C80100 		jmp	.L33
+ 1224      00
+ 1225              	.L34:
+ 1226 0d11 488D4580 		leaq	-128(%rbp), %rax
+ 1227 0d15 41B80900 		movl	$9, %r8d
+ 1227      0000
+ 1228 0d1b 488D15F8 		leaq	.LC90(%rip), %rdx
+ 1228      070000
+ 1229 0d22 4889C1   		movq	%rax, %rcx
+ 1230 0d25 E8000000 		call	strncmp
+ 1230      00
+ 1231 0d2a 85C0     		testl	%eax, %eax
+ 1232 0d2c 0F858D01 		jne	.L57
+ 1232      0000
+ 1233 0d32 488D4D80 		leaq	-128(%rbp), %rcx
+ 1234 0d36 488D55AA 		leaq	-86(%rbp), %rdx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 33
+
+
+ 1235 0d3a 488B45E0 		movq	-32(%rbp), %rax
+ 1236 0d3e 4989C8   		movq	%rcx, %r8
+ 1237 0d41 4889C1   		movq	%rax, %rcx
+ 1238 0d44 E8000000 		call	fscanf
+ 1238      00
+ 1239 0d49 8945EC   		movl	%eax, -20(%rbp)
+ 1240 0d4c E9450100 		jmp	.L58
+ 1240      00
+ 1241              	.L64:
+ 1242 0d51 C645FB01 		movb	$1, -5(%rbp)
+ 1243 0d55 488D4580 		leaq	-128(%rbp), %rax
+ 1244 0d59 41B80400 		movl	$4, %r8d
+ 1244      0000
+ 1245 0d5f 488D1579 		leaq	.LC75(%rip), %rdx
+ 1245      070000
+ 1246 0d66 4889C1   		movq	%rax, %rcx
+ 1247 0d69 E8000000 		call	strncmp
+ 1247      00
+ 1248 0d6e 85C0     		testl	%eax, %eax
+ 1249 0d70 756A     		jne	.L59
+ 1250 0d72 C645FB01 		movb	$1, -5(%rbp)
+ 1251 0d76 488D4D80 		leaq	-128(%rbp), %rcx
+ 1252 0d7a 488D55AA 		leaq	-86(%rbp), %rdx
+ 1253 0d7e 488B45E0 		movq	-32(%rbp), %rax
+ 1254 0d82 4989C8   		movq	%rcx, %r8
+ 1255 0d85 4889C1   		movq	%rax, %rcx
+ 1256 0d88 E8000000 		call	fscanf
+ 1256      00
+ 1257 0d8d 85C0     		testl	%eax, %eax
+ 1258 0d8f 0F84E100 		je	.L60
+ 1258      0000
+ 1259 0d95 C645FB00 		movb	$0, -5(%rbp)
+ 1260 0d99 BA010000 		movl	$1, %edx
+ 1260      00
+ 1261 0d9e B91E0000 		movl	$30, %ecx
+ 1261      00
+ 1262 0da3 E8000000 		call	calloc
+ 1262      00
+ 1263 0da8 488945D0 		movq	%rax, -48(%rbp)
+ 1264 0dac 488B55D0 		movq	-48(%rbp), %rdx
+ 1265 0db0 488D4580 		leaq	-128(%rbp), %rax
+ 1266 0db4 4889C1   		movq	%rax, %rcx
+ 1267 0db7 E8EFF8FF 		call	remove_quotes
+ 1267      FF
+ 1268 0dbc 488B45D0 		movq	-48(%rbp), %rax
+ 1269 0dc0 0FB600   		movzbl	(%rax), %eax
+ 1270 0dc3 84C0     		testb	%al, %al
+ 1271 0dc5 7404     		je	.L61
+ 1272 0dc7 C645FB01 		movb	$1, -5(%rbp)
+ 1273              	.L61:
+ 1274 0dcb 488B45D0 		movq	-48(%rbp), %rax
+ 1275 0dcf 4889C1   		movq	%rax, %rcx
+ 1276 0dd2 E8000000 		call	free
+ 1276      00
+ 1277 0dd7 E99A0000 		jmp	.L60
+ 1277      00
+ 1278              	.L59:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 34
+
+
+ 1279 0ddc 488D4580 		leaq	-128(%rbp), %rax
+ 1280 0de0 41B80700 		movl	$7, %r8d
+ 1280      0000
+ 1281 0de6 488D15AC 		leaq	.LC83(%rip), %rdx
+ 1281      070000
+ 1282 0ded 4889C1   		movq	%rax, %rcx
+ 1283 0df0 E8000000 		call	strncmp
+ 1283      00
+ 1284 0df5 85C0     		testl	%eax, %eax
+ 1285 0df7 7563     		jne	.L62
+ 1286 0df9 C645FB01 		movb	$1, -5(%rbp)
+ 1287 0dfd 488D4D80 		leaq	-128(%rbp), %rcx
+ 1288 0e01 488D55AA 		leaq	-86(%rbp), %rdx
+ 1289 0e05 488B45E0 		movq	-32(%rbp), %rax
+ 1290 0e09 4989C8   		movq	%rcx, %r8
+ 1291 0e0c 4889C1   		movq	%rax, %rcx
+ 1292 0e0f E8000000 		call	fscanf
+ 1292      00
+ 1293 0e14 85C0     		testl	%eax, %eax
+ 1294 0e16 745E     		je	.L60
+ 1295 0e18 C645FB00 		movb	$0, -5(%rbp)
+ 1296 0e1c BA010000 		movl	$1, %edx
+ 1296      00
+ 1297 0e21 B91E0000 		movl	$30, %ecx
+ 1297      00
+ 1298 0e26 E8000000 		call	calloc
+ 1298      00
+ 1299 0e2b 488945D8 		movq	%rax, -40(%rbp)
+ 1300 0e2f 488B55D8 		movq	-40(%rbp), %rdx
+ 1301 0e33 488D4580 		leaq	-128(%rbp), %rax
+ 1302 0e37 4889C1   		movq	%rax, %rcx
+ 1303 0e3a E86CF8FF 		call	remove_quotes
+ 1303      FF
+ 1304 0e3f 488B45D8 		movq	-40(%rbp), %rax
+ 1305 0e43 0FB600   		movzbl	(%rax), %eax
+ 1306 0e46 84C0     		testb	%al, %al
+ 1307 0e48 7404     		je	.L63
+ 1308 0e4a C645FB01 		movb	$1, -5(%rbp)
+ 1309              	.L63:
+ 1310 0e4e 488B45D8 		movq	-40(%rbp), %rax
+ 1311 0e52 4889C1   		movq	%rax, %rcx
+ 1312 0e55 E8000000 		call	free
+ 1312      00
+ 1313 0e5a EB1A     		jmp	.L60
+ 1314              	.L62:
+ 1315 0e5c 488D4580 		leaq	-128(%rbp), %rax
+ 1316 0e60 4889C2   		movq	%rax, %rdx
+ 1317 0e63 488D0D02 		leaq	.LC91(%rip), %rcx
+ 1317      080000
+ 1318 0e6a E8000000 		call	printf
+ 1318      00
+ 1319 0e6f C745FCFF 		movl	$-1, -4(%rbp)
+ 1319      FFFFFF
+ 1320              	.L60:
+ 1321 0e76 807DFB00 		cmpb	$0, -5(%rbp)
+ 1322 0e7a 741A     		je	.L58
+ 1323 0e7c 488D4D80 		leaq	-128(%rbp), %rcx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 35
+
+
+ 1324 0e80 488D55AA 		leaq	-86(%rbp), %rdx
+ 1325 0e84 488B45E0 		movq	-32(%rbp), %rax
+ 1326 0e88 4989C8   		movq	%rcx, %r8
+ 1327 0e8b 4889C1   		movq	%rax, %rcx
+ 1328 0e8e E8000000 		call	fscanf
+ 1328      00
+ 1329 0e93 8945EC   		movl	%eax, -20(%rbp)
+ 1330              	.L58:
+ 1331 0e96 837DEC00 		cmpl	$0, -20(%rbp)
+ 1332 0e9a 743D     		je	.L33
+ 1333 0e9c 488D4580 		leaq	-128(%rbp), %rax
+ 1334 0ea0 41B80700 		movl	$7, %r8d
+ 1334      0000
+ 1335 0ea6 488D1520 		leaq	.LC92(%rip), %rdx
+ 1335      080000
+ 1336 0ead 4889C1   		movq	%rax, %rcx
+ 1337 0eb0 E8000000 		call	strncmp
+ 1337      00
+ 1338 0eb5 85C0     		testl	%eax, %eax
+ 1339 0eb7 0F8594FE 		jne	.L64
+ 1339      FFFF
+ 1340 0ebd EB1A     		jmp	.L33
+ 1341              	.L57:
+ 1342 0ebf 488D4580 		leaq	-128(%rbp), %rax
+ 1343 0ec3 4889C2   		movq	%rax, %rdx
+ 1344 0ec6 488D0D28 		leaq	.LC93(%rip), %rcx
+ 1344      080000
+ 1345 0ecd E8000000 		call	printf
+ 1345      00
+ 1346 0ed2 C745FCFE 		movl	$-2, -4(%rbp)
+ 1346      FFFFFF
+ 1347              	.L33:
+ 1348 0ed9 488D4D80 		leaq	-128(%rbp), %rcx
+ 1349 0edd 488D55AA 		leaq	-86(%rbp), %rdx
+ 1350 0ee1 488B45E0 		movq	-32(%rbp), %rax
+ 1351 0ee5 4989C8   		movq	%rcx, %r8
+ 1352 0ee8 4889C1   		movq	%rax, %rcx
+ 1353 0eeb E8000000 		call	fscanf
+ 1353      00
+ 1354 0ef0 83F801   		cmpl	$1, %eax
+ 1355 0ef3 0F84F1F8 		je	.L65
+ 1355      FFFF
+ 1356 0ef9 488B45E0 		movq	-32(%rbp), %rax
+ 1357 0efd 4889C1   		movq	%rax, %rcx
+ 1358 0f00 E8000000 		call	fclose
+ 1358      00
+ 1359 0f05 8B45FC   		movl	-4(%rbp), %eax
+ 1360 0f08 4881C4A0 		addq	$160, %rsp
+ 1360      000000
+ 1361 0f0f 5D       		popq	%rbp
+ 1362 0f10 C3       		ret
+ 1363              		.seh_endproc
+ 1364              		.globl	create_cmd_file
+ 1365              		.def	create_cmd_file;	.scl	2;	.type	32;	.endef
+ 1366              		.seh_proc	create_cmd_file
+ 1367              	create_cmd_file:
+ 1368 0f11 55       		pushq	%rbp
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 36
+
+
+ 1369              		.seh_pushreg	%rbp
+ 1370 0f12 4889E5   		movq	%rsp, %rbp
+ 1371              		.seh_setframe	%rbp, 0
+ 1372 0f15 4883EC10 		subq	$16, %rsp
+ 1373              		.seh_stackalloc	16
+ 1374              		.seh_endprologue
+ 1375 0f19 C745FCFF 		movl	$-1, -4(%rbp)
+ 1375      FFFFFF
+ 1376 0f20 8B45FC   		movl	-4(%rbp), %eax
+ 1377 0f23 4883C410 		addq	$16, %rsp
+ 1378 0f27 5D       		popq	%rbp
+ 1379 0f28 C3       		ret
+ 1380              		.seh_endproc
+ 1381              		.def	__main;	.scl	2;	.type	32;	.endef
+ 1382              		.section .rdata,"dr"
+ 1383              	.LC94:
+ 1384 0840 496E7370 		.ascii "Inspired By:\15\0"
+ 1384      69726564 
+ 1384      2042793A 
+ 1384      0D00
+ 1385 084e 0000     		.align 8
+ 1386              	.LC95:
+ 1387 0850 726F6D20 		.ascii "rom image link editor version 1.01 (gcc32) Copyright (c) 1997 Hudson/KMC\15\0"
+ 1387      696D6167 
+ 1387      65206C69 
+ 1387      6E6B2065 
+ 1387      6469746F 
+ 1388              	.LC96:
+ 1389 089a 09617267 		.ascii "\11argc %d\12\0"
+ 1389      63202564 
+ 1389      0A00
+ 1390              	.LC97:
+ 1391 08a4 09617267 		.ascii "\11arg0 %s\12\0"
+ 1391      30202573 
+ 1391      0A00
+ 1392              	.LC98:
+ 1393 08ae 096F7074 		.ascii "\11opt: %c\15\12\0"
+ 1393      3A202563 
+ 1393      0D0A00
+ 1394              	.LC99:
+ 1395 08b9 096F7074 		.ascii "\11optind: %d\15\12\0"
+ 1395      696E643A 
+ 1395      2025640D 
+ 1395      0A00
+ 1396              	.LC100:
+ 1397 08c7 096F7074 		.ascii "\11optarg: %s\15\12\0"
+ 1397      6172673A 
+ 1397      2025730D 
+ 1397      0A00
+ 1398              	.LC101:
+ 1399 08d5 096F7074 		.ascii "\11optopt: %c\15\12\0"
+ 1399      6F70743A 
+ 1399      2025630D 
+ 1399      0A00
+ 1400              	.LC102:
+ 1401 08e3 096F7074 		.ascii "\11opterr: %d\15\12\0"
+ 1401      6572723A 
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 37
+
+
+ 1401      2025640D 
+ 1401      0A00
+ 1402 08f1 00000000 		.align 8
+ 1402      000000
+ 1403              	.LC103:
+ 1404 08f8 094D6973 		.ascii "\11Missing value for parameter %c\15\12\0"
+ 1404      73696E67 
+ 1404      2076616C 
+ 1404      75652066 
+ 1404      6F722070 
+ 1405 091a 00000000 		.align 8
+ 1405      0000
+ 1406              	.LC104:
+ 1407 0920 09417267 		.ascii "\11Argument %c : Invalid value %s\12\0"
+ 1407      756D656E 
+ 1407      74202563 
+ 1407      203A2049 
+ 1407      6E76616C 
+ 1408              	.LC105:
+ 1409 0941 44363400 		.ascii "D64\0"
+ 1410              	.LC106:
+ 1411 0945 6F707469 		.ascii "option: %c \12\0"
+ 1411      6F6E3A20 
+ 1411      2563200A 
+ 1411      00
+ 1412              	.LC107:
+ 1413 0952 64697265 		.ascii "directory: %s\12\0"
+ 1413      63746F72 
+ 1413      793A2025 
+ 1413      730A00
+ 1414              	.LC108:
+ 1415 0961 756E6B6E 		.ascii "unknown option: %c\12\0"
+ 1415      6F776E20 
+ 1415      6F707469 
+ 1415      6F6E3A20 
+ 1415      25630A00 
+ 1416              	.LC109:
+ 1417 0975 756E6B6E 		.ascii "unknown value: %s\15\12\0"
+ 1417      6F776E20 
+ 1417      76616C75 
+ 1417      653A2025 
+ 1417      730D0A00 
+ 1418 0989 00000000 		.align 8
+ 1418      000000
+ 1419              	.LC110:
+ 1420 0990 3A623A42 		.ascii ":b:B:dD:e:Ef:F:h:I:L:mo:p:r:s:t:U:w\0"
+ 1420      3A64443A 
+ 1420      653A4566 
+ 1420      3A463A68 
+ 1420      3A493A4C 
+ 1421              	.LC111:
+ 1422 09b4 46696C65 		.ascii "File not found %s\12\0"
+ 1422      206E6F74 
+ 1422      20666F75 
+ 1422      6E642025 
+ 1422      730A00
+ 1423              	.LC112:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 38
+
+
+ 1424 09c7 46696C65 		.ascii "File not writable %s\12\0"
+ 1424      206E6F74 
+ 1424      20777269 
+ 1424      7461626C 
+ 1424      65202573 
+ 1425              	.LC113:
+ 1426 09dd 25733A20 		.ascii "%s: using rom header: %s\12\0"
+ 1426      7573696E 
+ 1426      6720726F 
+ 1426      6D206865 
+ 1426      61646572 
+ 1427              	.LC114:
+ 1428 09f7 25733A20 		.ascii "%s: using pif2Boot: %s\12\0"
+ 1428      7573696E 
+ 1428      67207069 
+ 1428      6632426F 
+ 1428      6F743A20 
+ 1429              	.LC115:
+ 1430 0a0f 25733A20 		.ascii "%s: using font file: %s\12\0"
+ 1430      7573696E 
+ 1430      6720666F 
+ 1430      6E742066 
+ 1430      696C653A 
+ 1431              	.LC116:
+ 1432 0a28 25733A20 		.ascii "%s: using boot strap: %s\12\0"
+ 1432      7573696E 
+ 1432      6720626F 
+ 1432      6F742073 
+ 1432      74726170 
+ 1433              	.LC117:
+ 1434 0a42 25733A20 		.ascii "%s: using spec file: %s\12\0"
+ 1434      7573696E 
+ 1434      67207370 
+ 1434      65632066 
+ 1434      696C653A 
+ 1435              	.LC118:
+ 1436 0a5b 25733A20 		.ascii "%s: using output file: %s\12\0"
+ 1436      7573696E 
+ 1436      67206F75 
+ 1436      74707574 
+ 1436      2066696C 
+ 1437              	.LC119:
+ 1438 0a76 63707000 		.ascii "cpp\0"
+ 1439              	.LC120:
+ 1440 0a7a 2D4500   		.ascii "-E\0"
+ 1441              	.LC121:
+ 1442 0a7d 2D44204C 		.ascii "-D LANGUAGE_MAKEROM\0"
+ 1442      414E4755 
+ 1442      4147455F 
+ 1442      4D414B45 
+ 1442      524F4D00 
+ 1443              	.LC122:
+ 1444 0a91 2D5000   		.ascii "-P\0"
+ 1445              	.LC123:
+ 1446 0a94 2D782063 		.ascii "-x c\0"
+ 1446      00
+ 1447              	.LC124:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 39
+
+
+ 1448 0a99 2D6F2073 		.ascii "-o spec.out\0"
+ 1448      7065632E 
+ 1448      6F757400 
+ 1449              	.LC125:
+ 1450 0aa5 25733A20 		.ascii "%s: \0"
+ 1450      00
+ 1451              	.LC126:
+ 1452 0aaa 25732000 		.ascii "%s \0"
+ 1453              	.LC127:
+ 1454 0aae 53706563 		.ascii "Spec file result: %d\12\0"
+ 1454      2066696C 
+ 1454      65207265 
+ 1454      73756C74 
+ 1454      3A202564 
+ 1455              	.LC128:
+ 1456 0ac4 25733A20 		.ascii "%s: creating command file\12\0"
+ 1456      63726561 
+ 1456      74696E67 
+ 1456      20636F6D 
+ 1456      6D616E64 
+ 1457              	.LC129:
+ 1458 0adf 43726561 		.ascii "Create Command result: %d\12\0"
+ 1458      74652043 
+ 1458      6F6D6D61 
+ 1458      6E642072 
+ 1458      6573756C 
+ 1459              	.LC130:
+ 1460 0afa 25733A20 		.ascii "%s: execute link editor\12\0"
+ 1460      65786563 
+ 1460      75746520 
+ 1460      6C696E6B 
+ 1460      20656469 
+ 1461              	.LC131:
+ 1462 0b13 6C6400   		.ascii "ld\0"
+ 1463              	.LC132:
+ 1464 0b16 2D472030 		.ascii "-G 0 -noinhibit-exec -T\0"
+ 1464      202D6E6F 
+ 1464      696E6869 
+ 1464      6269742D 
+ 1464      65786563 
+ 1465              	.LC133:
+ 1466 0b2e 726F6D5F 		.ascii "rom_link.cmd\0"
+ 1466      6C696E6B 
+ 1466      2E636D64 
+ 1466      00
+ 1467              	.LC134:
+ 1468 0b3b 2D6F00   		.ascii "-o\0"
+ 1469              	.LC135:
+ 1470 0b3e 4C696E6B 		.ascii "Linker result: %d\12\0"
+ 1470      65722072 
+ 1470      6573756C 
+ 1470      743A2025 
+ 1470      640A00
+ 1471              	.LC136:
+ 1472 0b51 25733A20 		.ascii "%s: creating entry source\12\0"
+ 1472      63726561 
+ 1472      74696E67 
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 40
+
+
+ 1472      20656E74 
+ 1472      72792073 
+ 1473              	.LC137:
+ 1474 0b6c 617300   		.ascii "as\0"
+ 1475              	.LC138:
+ 1476 0b6f 2D6E6F6E 		.ascii "-non_shared\0"
+ 1476      5F736861 
+ 1476      72656400 
+ 1477              	.LC139:
+ 1478 0b7b 656E7472 		.ascii "entry.s\0"
+ 1478      792E7300 
+ 1479              	.LC140:
+ 1480 0b83 25733A20 		.ascii "%s: assemble entry source\12\0"
+ 1480      61737365 
+ 1480      6D626C65 
+ 1480      20656E74 
+ 1480      72792073 
+ 1481              	.LC141:
+ 1482 0b9e 6C7300   		.ascii "ls\0"
+ 1483              	.LC142:
+ 1484 0ba1 25733A20 		.ascii "%s: %s -R %s -o %s\12\0"
+ 1484      2573202D 
+ 1484      52202573 
+ 1484      202D6F20 
+ 1484      25730A00 
+ 1485              	.LC143:
+ 1486 0bb5 612E6F75 		.ascii "a.out\0"
+ 1486      7400
+ 1487              	.LC144:
+ 1488 0bbb 25733A20 		.ascii "%s: writing %s\12\0"
+ 1488      77726974 
+ 1488      696E6720 
+ 1488      25730A00 
+ 1489              	.LC145:
+ 1490 0bcb 436F6D70 		.ascii "Complete\0"
+ 1490      6C657465 
+ 1490      00
+ 1491              		.text
+ 1492              		.globl	main
+ 1493              		.def	main;	.scl	2;	.type	32;	.endef
+ 1494              		.seh_proc	main
+ 1495              	main:
+ 1496 0f29 55       		pushq	%rbp
+ 1497              		.seh_pushreg	%rbp
+ 1498 0f2a 4881EC10 		subq	$272, %rsp
+ 1498      010000
+ 1499              		.seh_stackalloc	272
+ 1500 0f31 488DAC24 		leaq	128(%rsp), %rbp
+ 1500      80000000 
+ 1501              		.seh_setframe	%rbp, 128
+ 1502              		.seh_endprologue
+ 1503 0f39 898DA000 		movl	%ecx, 160(%rbp)
+ 1503      0000
+ 1504 0f3f 488995A8 		movq	%rdx, 168(%rbp)
+ 1504      000000
+ 1505 0f46 E8000000 		call	__main
+ 1505      00
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 41
+
+
+ 1506 0f4b C7858C00 		movl	$0, 140(%rbp)
+ 1506      00000000 
+ 1506      0000
+ 1507 0f55 488D0500 		leaq	arg_struct(%rip), %rax
+ 1507      000000
+ 1508 0f5c C6400900 		movb	$0, 9(%rax)
+ 1509 0f60 E8000000 		call	clock
+ 1509      00
+ 1510 0f65 488D1500 		leaq	counter(%rip), %rdx
+ 1510      000000
+ 1511 0f6c 8902     		movl	%eax, (%rdx)
+ 1512 0f6e 488D0D40 		leaq	.LC94(%rip), %rcx
+ 1512      080000
+ 1513 0f75 E8000000 		call	puts
+ 1513      00
+ 1514 0f7a 488D0D50 		leaq	.LC95(%rip), %rcx
+ 1514      080000
+ 1515 0f81 E8000000 		call	puts
+ 1515      00
+ 1516 0f86 8B95A000 		movl	160(%rbp), %edx
+ 1516      0000
+ 1517 0f8c 488D0D9A 		leaq	.LC96(%rip), %rcx
+ 1517      080000
+ 1518 0f93 E8000000 		call	printf
+ 1518      00
+ 1519 0f98 83BDA000 		cmpl	$1, 160(%rbp)
+ 1519      000001
+ 1520 0f9f 7519     		jne	.L71
+ 1521 0fa1 488B85A8 		movq	168(%rbp), %rax
+ 1521      000000
+ 1522 0fa8 488B00   		movq	(%rax), %rax
+ 1523 0fab 4889C2   		movq	%rax, %rdx
+ 1524 0fae 488D0DA4 		leaq	.LC97(%rip), %rcx
+ 1524      080000
+ 1525 0fb5 E8000000 		call	printf
+ 1525      00
+ 1526              	.L71:
+ 1527 0fba 83BDA000 		cmpl	$1, 160(%rbp)
+ 1527      000001
+ 1528 0fc1 0F85E303 		jne	.L74
+ 1528      0000
+ 1529 0fc7 488B85A8 		movq	168(%rbp), %rax
+ 1529      000000
+ 1530 0fce 488B00   		movq	(%rax), %rax
+ 1531 0fd1 4889C1   		movq	%rax, %rcx
+ 1532 0fd4 E8D7F4FF 		call	usage
+ 1532      FF
+ 1533 0fd9 E8000000 		call	clock
+ 1533      00
+ 1534 0fde 488D1500 		leaq	counter(%rip), %rdx
+ 1534      000000
+ 1535 0fe5 8B12     		movl	(%rdx), %edx
+ 1536 0fe7 29D0     		subl	%edx, %eax
+ 1537 0fe9 89C2     		movl	%eax, %edx
+ 1538 0feb 488D0500 		leaq	counter(%rip), %rax
+ 1538      000000
+ 1539 0ff2 8910     		movl	%edx, (%rax)
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 42
+
+
+ 1540 0ff4 488D0500 		leaq	counter(%rip), %rax
+ 1540      000000
+ 1541 0ffb 8B00     		movl	(%rax), %eax
+ 1542 0ffd F20F2AC0 		cvtsi2sdl	%eax, %xmm0
+ 1543 1001 F20F100D 		movsd	.LC64(%rip), %xmm1
+ 1543      D00C0000 
+ 1544 1009 F20F5EC1 		divsd	%xmm1, %xmm0
+ 1545 100d F20F1145 		movsd	%xmm0, 64(%rbp)
+ 1545      40
+ 1546 1012 F20F1045 		movsd	64(%rbp), %xmm0
+ 1546      40
+ 1547 1017 488B4540 		movq	64(%rbp), %rax
+ 1548 101b 660F28C8 		movapd	%xmm0, %xmm1
+ 1549 101f 4889C2   		movq	%rax, %rdx
+ 1550 1022 488D0DD8 		leaq	.LC65(%rip), %rcx
+ 1550      060000
+ 1551 1029 E8000000 		call	printf
+ 1551      00
+ 1552 102e B8000000 		movl	$0, %eax
+ 1552      00
+ 1553 1033 E9510B00 		jmp	.L139
+ 1553      00
+ 1554              	.L105:
+ 1555 1038 8B456C   		movl	108(%rbp), %eax
+ 1556 103b 89C2     		movl	%eax, %edx
+ 1557 103d 488D0DAE 		leaq	.LC98(%rip), %rcx
+ 1557      080000
+ 1558 1044 E8000000 		call	printf
+ 1558      00
+ 1559 1049 488B0500 		movq	.refptr.optind(%rip), %rax
+ 1559      000000
+ 1560 1050 8B00     		movl	(%rax), %eax
+ 1561 1052 89C2     		movl	%eax, %edx
+ 1562 1054 488D0DB9 		leaq	.LC99(%rip), %rcx
+ 1562      080000
+ 1563 105b E8000000 		call	printf
+ 1563      00
+ 1564 1060 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1564      000000
+ 1565 1067 488B00   		movq	(%rax), %rax
+ 1566 106a 4889C2   		movq	%rax, %rdx
+ 1567 106d 488D0DC7 		leaq	.LC100(%rip), %rcx
+ 1567      080000
+ 1568 1074 E8000000 		call	printf
+ 1568      00
+ 1569 1079 488B0500 		movq	.refptr.optopt(%rip), %rax
+ 1569      000000
+ 1570 1080 8B00     		movl	(%rax), %eax
+ 1571 1082 89C2     		movl	%eax, %edx
+ 1572 1084 488D0DD5 		leaq	.LC101(%rip), %rcx
+ 1572      080000
+ 1573 108b E8000000 		call	printf
+ 1573      00
+ 1574 1090 488B0500 		movq	.refptr.opterr(%rip), %rax
+ 1574      000000
+ 1575 1097 8B00     		movl	(%rax), %eax
+ 1576 1099 89C2     		movl	%eax, %edx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 43
+
+
+ 1577 109b 488D0DE3 		leaq	.LC102(%rip), %rcx
+ 1577      080000
+ 1578 10a2 E8000000 		call	printf
+ 1578      00
+ 1579 10a7 488D0500 		leaq	arg_struct(%rip), %rax
+ 1579      000000
+ 1580 10ae C6400C01 		movb	$1, 12(%rax)
+ 1581 10b2 8B456C   		movl	108(%rbp), %eax
+ 1582 10b5 83E83A   		subl	$58, %eax
+ 1583 10b8 83F83D   		cmpl	$61, %eax
+ 1584 10bb 0F879F02 		ja	.L75
+ 1584      0000
+ 1585 10c1 89C0     		movl	%eax, %eax
+ 1586 10c3 488D1485 		leaq	0(,%rax,4), %rdx
+ 1586      00000000 
+ 1587 10cb 488D05D4 		leaq	.L77(%rip), %rax
+ 1587      0B0000
+ 1588 10d2 8B0402   		movl	(%rdx,%rax), %eax
+ 1589 10d5 4898     		cltq
+ 1590 10d7 488D15D4 		leaq	.L77(%rip), %rdx
+ 1590      0B0000
+ 1591 10de 4801D0   		addq	%rdx, %rax
+ 1592 10e1 FFE0     		jmp	*%rax
+ 1593              		.section .rdata,"dr"
+ 1594              		.align 4
+ 1595              	.L77:
+ 1596 0bd4 E7100000 		.long	.L96-.L77
+ 1597 0bd8 68130000 		.long	.L75-.L77
+ 1598 0bdc 6C130000 		.long	.L75-.L77
+ 1599 0be0 70130000 		.long	.L75-.L77
+ 1600 0be4 74130000 		.long	.L75-.L77
+ 1601 0be8 78130000 		.long	.L75-.L77
+ 1602 0bec 7C130000 		.long	.L75-.L77
+ 1603 0bf0 80130000 		.long	.L75-.L77
+ 1604 0bf4 43110000 		.long	.L95-.L77
+ 1605 0bf8 88130000 		.long	.L75-.L77
+ 1606 0bfc DA110000 		.long	.L94-.L77
+ 1607 0c00 16120000 		.long	.L93-.L77
+ 1608 0c04 DE130000 		.long	.L74-.L77
+ 1609 0c08 98130000 		.long	.L75-.L77
+ 1610 0c0c 9C130000 		.long	.L75-.L77
+ 1611 0c10 7A120000 		.long	.L91-.L77
+ 1612 0c14 A4130000 		.long	.L75-.L77
+ 1613 0c18 A8130000 		.long	.L75-.L77
+ 1614 0c1c AC130000 		.long	.L75-.L77
+ 1615 0c20 B0130000 		.long	.L75-.L77
+ 1616 0c24 B4130000 		.long	.L75-.L77
+ 1617 0c28 B8130000 		.long	.L75-.L77
+ 1618 0c2c BC130000 		.long	.L75-.L77
+ 1619 0c30 C0130000 		.long	.L75-.L77
+ 1620 0c34 C4130000 		.long	.L75-.L77
+ 1621 0c38 C8130000 		.long	.L75-.L77
+ 1622 0c3c CC130000 		.long	.L75-.L77
+ 1623 0c40 1A140000 		.long	.L74-.L77
+ 1624 0c44 D4130000 		.long	.L75-.L77
+ 1625 0c48 D8130000 		.long	.L75-.L77
+ 1626 0c4c DC130000 		.long	.L75-.L77
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 44
+
+
+ 1627 0c50 E0130000 		.long	.L75-.L77
+ 1628 0c54 E4130000 		.long	.L75-.L77
+ 1629 0c58 E8130000 		.long	.L75-.L77
+ 1630 0c5c EC130000 		.long	.L75-.L77
+ 1631 0c60 F0130000 		.long	.L75-.L77
+ 1632 0c64 F4130000 		.long	.L75-.L77
+ 1633 0c68 F8130000 		.long	.L75-.L77
+ 1634 0c6c FC130000 		.long	.L75-.L77
+ 1635 0c70 00140000 		.long	.L75-.L77
+ 1636 0c74 AD110000 		.long	.L89-.L77
+ 1637 0c78 08140000 		.long	.L75-.L77
+ 1638 0c7c 4A120000 		.long	.L88-.L77
+ 1639 0c80 5A140000 		.long	.L74-.L77
+ 1640 0c84 AA120000 		.long	.L86-.L77
+ 1641 0c88 18140000 		.long	.L75-.L77
+ 1642 0c8c E0120000 		.long	.L85-.L77
+ 1643 0c90 6A140000 		.long	.L74-.L77
+ 1644 0c94 24140000 		.long	.L75-.L77
+ 1645 0c98 28140000 		.long	.L75-.L77
+ 1646 0c9c 2C140000 		.long	.L75-.L77
+ 1647 0ca0 28130000 		.long	.L83-.L77
+ 1648 0ca4 34140000 		.long	.L75-.L77
+ 1649 0ca8 82140000 		.long	.L74-.L77
+ 1650 0cac 86140000 		.long	.L74-.L77
+ 1651 0cb0 40140000 		.long	.L75-.L77
+ 1652 0cb4 8E140000 		.long	.L74-.L77
+ 1653 0cb8 50130000 		.long	.L79-.L77
+ 1654 0cbc D2130000 		.long	.L78-.L77
+ 1655 0cc0 50140000 		.long	.L75-.L77
+ 1656 0cc4 54140000 		.long	.L75-.L77
+ 1657 0cc8 A2140000 		.long	.L74-.L77
+ 1658              		.text
+ 1659              	.L96:
+ 1660 10e3 488B0500 		movq	.refptr.optopt(%rip), %rax
+ 1660      000000
+ 1661 10ea 8B00     		movl	(%rax), %eax
+ 1662 10ec 89C2     		movl	%eax, %edx
+ 1663 10ee 488D0DF8 		leaq	.LC103(%rip), %rcx
+ 1663      080000
+ 1664 10f5 E8000000 		call	printf
+ 1664      00
+ 1665 10fa C7858C00 		movl	$1, 140(%rbp)
+ 1665      00000100 
+ 1665      0000
+ 1666 1104 E9A10200 		jmp	.L74
+ 1666      00
+ 1667              	.L89:
+ 1668 1109 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1668      000000
+ 1669 1110 488B00   		movq	(%rax), %rax
+ 1670 1113 48890510 		movq	%rax, bootstrap_file(%rip)
+ 1670      000000
+ 1671 111a E98B0200 		jmp	.L74
+ 1671      00
+ 1672              	.L95:
+ 1673 111f 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1673      000000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 45
+
+
+ 1674 1126 488B00   		movq	(%rax), %rax
+ 1675 1129 4889C1   		movq	%rax, %rcx
+ 1676 112c E8000000 		call	atoi
+ 1676      00
+ 1677 1131 488D1500 		leaq	conversion_int(%rip), %rdx
+ 1677      000000
+ 1678 1138 8902     		movl	%eax, (%rdx)
+ 1679 113a 488D0500 		leaq	conversion_int(%rip), %rax
+ 1679      000000
+ 1680 1141 8B00     		movl	(%rax), %eax
+ 1681 1143 85C0     		testl	%eax, %eax
+ 1682 1145 780E     		js	.L97
+ 1683 1147 488D0500 		leaq	conversion_int(%rip), %rax
+ 1683      000000
+ 1684 114e 8B00     		movl	(%rax), %eax
+ 1685 1150 83F801   		cmpl	$1, %eax
+ 1686 1153 7E2F     		jle	.L98
+ 1687              	.L97:
+ 1688 1155 C7858C00 		movl	$2, 140(%rbp)
+ 1688      00000200 
+ 1688      0000
+ 1689 115f 8B456C   		movl	108(%rbp), %eax
+ 1690 1162 88454D   		movb	%al, 77(%rbp)
+ 1691 1165 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1691      000000
+ 1692 116c 488B10   		movq	(%rax), %rdx
+ 1693 116f 0FBE454D 		movsbl	77(%rbp), %eax
+ 1694 1173 4989D0   		movq	%rdx, %r8
+ 1695 1176 89C2     		movl	%eax, %edx
+ 1696 1178 488D0D20 		leaq	.LC104(%rip), %rcx
+ 1696      090000
+ 1697 117f E8000000 		call	printf
+ 1697      00
+ 1698              	.L98:
+ 1699 1184 488D0500 		leaq	conversion_int(%rip), %rax
+ 1699      000000
+ 1700 118b 8B00     		movl	(%rax), %eax
+ 1701 118d 89C2     		movl	%eax, %edx
+ 1702 118f 488D0500 		leaq	arg_struct(%rip), %rax
+ 1702      000000
+ 1703 1196 885008   		movb	%dl, 8(%rax)
+ 1704 1199 E90C0200 		jmp	.L74
+ 1704      00
+ 1705              	.L88:
+ 1706 119e 488D0500 		leaq	arg_struct(%rip), %rax
+ 1706      000000
+ 1707 11a5 C6400C01 		movb	$1, 12(%rax)
+ 1708 11a9 E9FC0100 		jmp	.L74
+ 1708      00
+ 1709              	.L94:
+ 1710 11ae 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1710      000000
+ 1711 11b5 488B00   		movq	(%rax), %rax
+ 1712 11b8 488D1541 		leaq	.LC105(%rip), %rdx
+ 1712      090000
+ 1713 11bf 4889C1   		movq	%rax, %rcx
+ 1714 11c2 E8000000 		call	strcmp
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 46
+
+
+ 1714      00
+ 1715 11c7 85C0     		testl	%eax, %eax
+ 1716 11c9 7505     		jne	.L99
+ 1717 11cb E9DA0100 		jmp	.L74
+ 1717      00
+ 1718              	.L99:
+ 1719 11d0 8B456C   		movl	108(%rbp), %eax
+ 1720 11d3 89C2     		movl	%eax, %edx
+ 1721 11d5 488D0D45 		leaq	.LC106(%rip), %rcx
+ 1721      090000
+ 1722 11dc E8000000 		call	printf
+ 1722      00
+ 1723 11e1 E9C40100 		jmp	.L74
+ 1723      00
+ 1724              	.L93:
+ 1725 11e6 488D0500 		leaq	arg_struct(%rip), %rax
+ 1725      000000
+ 1726 11ed C6400D01 		movb	$1, 13(%rax)
+ 1727 11f1 E9B40100 		jmp	.L74
+ 1727      00
+ 1728              	.L86:
+ 1729 11f6 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1729      000000
+ 1730 11fd 488B00   		movq	(%rax), %rax
+ 1731 1200 41B80000 		movl	$0, %r8d
+ 1731      0000
+ 1732 1206 BA000000 		movl	$0, %edx
+ 1732      00
+ 1733 120b 4889C1   		movq	%rax, %rcx
+ 1734 120e E8000000 		call	strtol
+ 1734      00
+ 1735 1213 89C2     		movl	%eax, %edx
+ 1736 1215 488D0500 		leaq	arg_struct(%rip), %rax
+ 1736      000000
+ 1737 121c 885009   		movb	%dl, 9(%rax)
+ 1738 121f E9860100 		jmp	.L74
+ 1738      00
+ 1739              	.L85:
+ 1740 1224 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1740      000000
+ 1741 122b 488B00   		movq	(%rax), %rax
+ 1742 122e 48890518 		movq	%rax, romheader_file(%rip)
+ 1742      000000
+ 1743 1235 E9700100 		jmp	.L74
+ 1743      00
+ 1744              	.L91:
+ 1745 123a 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1745      000000
+ 1746 1241 488B00   		movq	(%rax), %rax
+ 1747 1244 4889C2   		movq	%rax, %rdx
+ 1748 1247 488D0D52 		leaq	.LC107(%rip), %rcx
+ 1748      090000
+ 1749 124e E8000000 		call	printf
+ 1749      00
+ 1750 1253 E9520100 		jmp	.L74
+ 1750      00
+ 1751              	.L83:
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 47
+
+
+ 1752 1258 488D0500 		leaq	arg_struct(%rip), %rax
+ 1752      000000
+ 1753 125f C6400E01 		movb	$1, 14(%rax)
+ 1754 1263 E9420100 		jmp	.L74
+ 1754      00
+ 1755              	.L79:
+ 1756 1268 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1756      000000
+ 1757 126f 488B00   		movq	(%rax), %rax
+ 1758 1272 4889C1   		movq	%rax, %rcx
+ 1759 1275 E8000000 		call	atoi
+ 1759      00
+ 1760 127a 488D1500 		leaq	conversion_int(%rip), %rdx
+ 1760      000000
+ 1761 1281 8902     		movl	%eax, (%rdx)
+ 1762 1283 488D0500 		leaq	conversion_int(%rip), %rax
+ 1762      000000
+ 1763 128a 8B00     		movl	(%rax), %eax
+ 1764 128c 85C0     		testl	%eax, %eax
+ 1765 128e 7810     		js	.L100
+ 1766 1290 488D0500 		leaq	conversion_int(%rip), %rax
+ 1766      000000
+ 1767 1297 8B00     		movl	(%rax), %eax
+ 1768 1299 3D000100 		cmpl	$256, %eax
+ 1768      00
+ 1769 129e 7E2F     		jle	.L101
+ 1770              	.L100:
+ 1771 12a0 C7858C00 		movl	$2, 140(%rbp)
+ 1771      00000200 
+ 1771      0000
+ 1772 12aa 8B456C   		movl	108(%rbp), %eax
+ 1773 12ad 88454E   		movb	%al, 78(%rbp)
+ 1774 12b0 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1774      000000
+ 1775 12b7 488B10   		movq	(%rax), %rdx
+ 1776 12ba 0FBE454E 		movsbl	78(%rbp), %eax
+ 1777 12be 4989D0   		movq	%rdx, %r8
+ 1778 12c1 89C2     		movl	%eax, %edx
+ 1779 12c3 488D0D20 		leaq	.LC104(%rip), %rcx
+ 1779      090000
+ 1780 12ca E8000000 		call	printf
+ 1780      00
+ 1781              	.L101:
+ 1782 12cf 488D0500 		leaq	conversion_int(%rip), %rax
+ 1782      000000
+ 1783 12d6 8B10     		movl	(%rax), %edx
+ 1784 12d8 488D0500 		leaq	arg_struct(%rip), %rax
+ 1784      000000
+ 1785 12df 8910     		movl	%edx, (%rax)
+ 1786 12e1 E9C40000 		jmp	.L74
+ 1786      00
+ 1787              	.L78:
+ 1788 12e6 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1788      000000
+ 1789 12ed 488B00   		movq	(%rax), %rax
+ 1790 12f0 4889C1   		movq	%rax, %rcx
+ 1791 12f3 E8000000 		call	atoi
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 48
+
+
+ 1791      00
+ 1792 12f8 488D1500 		leaq	conversion_int(%rip), %rdx
+ 1792      000000
+ 1793 12ff 8902     		movl	%eax, (%rdx)
+ 1794 1301 488D0500 		leaq	conversion_int(%rip), %rax
+ 1794      000000
+ 1795 1308 8B00     		movl	(%rax), %eax
+ 1796 130a 85C0     		testl	%eax, %eax
+ 1797 130c 780E     		js	.L102
+ 1798 130e 488D0500 		leaq	conversion_int(%rip), %rax
+ 1798      000000
+ 1799 1315 8B00     		movl	(%rax), %eax
+ 1800 1317 83F806   		cmpl	$6, %eax
+ 1801 131a 7E2F     		jle	.L103
+ 1802              	.L102:
+ 1803 131c C7858C00 		movl	$2, 140(%rbp)
+ 1803      00000200 
+ 1803      0000
+ 1804 1326 8B456C   		movl	108(%rbp), %eax
+ 1805 1329 88454F   		movb	%al, 79(%rbp)
+ 1806 132c 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1806      000000
+ 1807 1333 488B10   		movq	(%rax), %rdx
+ 1808 1336 0FBE454F 		movsbl	79(%rbp), %eax
+ 1809 133a 4989D0   		movq	%rdx, %r8
+ 1810 133d 89C2     		movl	%eax, %edx
+ 1811 133f 488D0D20 		leaq	.LC104(%rip), %rcx
+ 1811      090000
+ 1812 1346 E8000000 		call	printf
+ 1812      00
+ 1813              	.L103:
+ 1814 134b 488D0500 		leaq	conversion_int(%rip), %rax
+ 1814      000000
+ 1815 1352 8B10     		movl	(%rax), %edx
+ 1816 1354 488D0500 		leaq	arg_struct(%rip), %rax
+ 1816      000000
+ 1817 135b 895004   		movl	%edx, 4(%rax)
+ 1818 135e EB4A     		jmp	.L74
+ 1819              	.L75:
+ 1820 1360 837D6C3F 		cmpl	$63, 108(%rbp)
+ 1821 1364 7439     		je	.L104
+ 1822 1366 8B456C   		movl	108(%rbp), %eax
+ 1823 1369 89C2     		movl	%eax, %edx
+ 1824 136b 488D0D61 		leaq	.LC108(%rip), %rcx
+ 1824      090000
+ 1825 1372 E8000000 		call	printf
+ 1825      00
+ 1826 1377 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1826      000000
+ 1827 137e 488B00   		movq	(%rax), %rax
+ 1828 1381 4885C0   		testq	%rax, %rax
+ 1829 1384 7419     		je	.L104
+ 1830 1386 488B0500 		movq	.refptr.optarg(%rip), %rax
+ 1830      000000
+ 1831 138d 488B00   		movq	(%rax), %rax
+ 1832 1390 4889C2   		movq	%rax, %rdx
+ 1833 1393 488D0D75 		leaq	.LC109(%rip), %rcx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 49
+
+
+ 1833      090000
+ 1834 139a E8000000 		call	printf
+ 1834      00
+ 1835              	.L104:
+ 1836 139f C7858C00 		movl	$-1, 140(%rbp)
+ 1836      0000FFFF 
+ 1836      FFFF
+ 1837 13a9 90       		nop
+ 1838              	.L74:
+ 1839 13aa 488B85A8 		movq	168(%rbp), %rax
+ 1839      000000
+ 1840 13b1 4C8D0590 		leaq	.LC110(%rip), %r8
+ 1840      090000
+ 1841 13b8 4889C2   		movq	%rax, %rdx
+ 1842 13bb 8B8DA000 		movl	160(%rbp), %ecx
+ 1842      0000
+ 1843 13c1 E8000000 		call	getopt
+ 1843      00
+ 1844 13c6 89456C   		movl	%eax, 108(%rbp)
+ 1845 13c9 837D6CFF 		cmpl	$-1, 108(%rbp)
+ 1846 13cd 0F8565FC 		jne	.L105
+ 1846      FFFF
+ 1847 13d3 488B0500 		movq	.refptr.optind(%rip), %rax
+ 1847      000000
+ 1848 13da 8B00     		movl	(%rax), %eax
+ 1849 13dc 3985A000 		cmpl	%eax, 160(%rbp)
+ 1849      0000
+ 1850 13e2 7E27     		jle	.L106
+ 1851 13e4 488B0500 		movq	.refptr.optind(%rip), %rax
+ 1851      000000
+ 1852 13eb 8B00     		movl	(%rax), %eax
+ 1853 13ed 4898     		cltq
+ 1854 13ef 488D14C5 		leaq	0(,%rax,8), %rdx
+ 1854      00000000 
+ 1855 13f7 488B85A8 		movq	168(%rbp), %rax
+ 1855      000000
+ 1856 13fe 4801D0   		addq	%rdx, %rax
+ 1857 1401 488B00   		movq	(%rax), %rax
+ 1858 1404 48890540 		movq	%rax, spec_file(%rip)
+ 1858      000000
+ 1859              	.L106:
+ 1860 140b 488B0540 		movq	spec_file(%rip), %rax
+ 1860      000000
+ 1861 1412 BA040000 		movl	$4, %edx
+ 1861      00
+ 1862 1417 4889C1   		movq	%rax, %rcx
+ 1863 141a E8A0EDFF 		call	file_exists_current_dir
+ 1863      FF
+ 1864 141f 83F001   		xorl	$1, %eax
+ 1865 1422 84C0     		testb	%al, %al
+ 1866 1424 7420     		je	.L107
+ 1867 1426 C7858C00 		movl	$3, 140(%rbp)
+ 1867      00000300 
+ 1867      0000
+ 1868 1430 488B0540 		movq	spec_file(%rip), %rax
+ 1868      000000
+ 1869 1437 4889C2   		movq	%rax, %rdx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 50
+
+
+ 1870 143a 488D0DB4 		leaq	.LC111(%rip), %rcx
+ 1870      090000
+ 1871 1441 E8000000 		call	printf
+ 1871      00
+ 1872              	.L107:
+ 1873 1446 488B0518 		movq	romheader_file(%rip), %rax
+ 1873      000000
+ 1874 144d BA040000 		movl	$4, %edx
+ 1874      00
+ 1875 1452 4889C1   		movq	%rax, %rcx
+ 1876 1455 E88DECFF 		call	file_exists
+ 1876      FF
+ 1877 145a 83F001   		xorl	$1, %eax
+ 1878 145d 84C0     		testb	%al, %al
+ 1879 145f 7420     		je	.L108
+ 1880 1461 C7858C00 		movl	$3, 140(%rbp)
+ 1880      00000300 
+ 1880      0000
+ 1881 146b 488B0518 		movq	romheader_file(%rip), %rax
+ 1881      000000
+ 1882 1472 4889C2   		movq	%rax, %rdx
+ 1883 1475 488D0DB4 		leaq	.LC111(%rip), %rcx
+ 1883      090000
+ 1884 147c E8000000 		call	printf
+ 1884      00
+ 1885              	.L108:
+ 1886 1481 488B0530 		movq	output_file(%rip), %rax
+ 1886      000000
+ 1887 1488 BA000000 		movl	$0, %edx
+ 1887      00
+ 1888 148d 4889C1   		movq	%rax, %rcx
+ 1889 1490 E852ECFF 		call	file_exists
+ 1889      FF
+ 1890 1495 84C0     		testb	%al, %al
+ 1891 1497 743B     		je	.L109
+ 1892 1499 488B0530 		movq	output_file(%rip), %rax
+ 1892      000000
+ 1893 14a0 BA020000 		movl	$2, %edx
+ 1893      00
+ 1894 14a5 4889C1   		movq	%rax, %rcx
+ 1895 14a8 E83AECFF 		call	file_exists
+ 1895      FF
+ 1896 14ad 83F001   		xorl	$1, %eax
+ 1897 14b0 84C0     		testb	%al, %al
+ 1898 14b2 7420     		je	.L109
+ 1899 14b4 C7858C00 		movl	$3, 140(%rbp)
+ 1899      00000300 
+ 1899      0000
+ 1900 14be 488B0530 		movq	output_file(%rip), %rax
+ 1900      000000
+ 1901 14c5 4889C2   		movq	%rax, %rdx
+ 1902 14c8 488D0DC7 		leaq	.LC112(%rip), %rcx
+ 1902      090000
+ 1903 14cf E8000000 		call	printf
+ 1903      00
+ 1904              	.L109:
+ 1905 14d4 488B0510 		movq	bootstrap_file(%rip), %rax
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 51
+
+
+ 1905      000000
+ 1906 14db BA040000 		movl	$4, %edx
+ 1906      00
+ 1907 14e0 4889C1   		movq	%rax, %rcx
+ 1908 14e3 E8FFEBFF 		call	file_exists
+ 1908      FF
+ 1909 14e8 83F001   		xorl	$1, %eax
+ 1910 14eb 84C0     		testb	%al, %al
+ 1911 14ed 7420     		je	.L110
+ 1912 14ef C7858C00 		movl	$3, 140(%rbp)
+ 1912      00000300 
+ 1912      0000
+ 1913 14f9 488B0510 		movq	bootstrap_file(%rip), %rax
+ 1913      000000
+ 1914 1500 4889C2   		movq	%rax, %rdx
+ 1915 1503 488D0DB4 		leaq	.LC111(%rip), %rcx
+ 1915      090000
+ 1916 150a E8000000 		call	printf
+ 1916      00
+ 1917              	.L110:
+ 1918 150f 488B0520 		movq	pif_file(%rip), %rax
+ 1918      000000
+ 1919 1516 BA040000 		movl	$4, %edx
+ 1919      00
+ 1920 151b 4889C1   		movq	%rax, %rcx
+ 1921 151e E8C4EBFF 		call	file_exists
+ 1921      FF
+ 1922 1523 83F001   		xorl	$1, %eax
+ 1923 1526 84C0     		testb	%al, %al
+ 1924 1528 7420     		je	.L111
+ 1925 152a C7858C00 		movl	$3, 140(%rbp)
+ 1925      00000300 
+ 1925      0000
+ 1926 1534 488B0520 		movq	pif_file(%rip), %rax
+ 1926      000000
+ 1927 153b 4889C2   		movq	%rax, %rdx
+ 1928 153e 488D0DB4 		leaq	.LC111(%rip), %rcx
+ 1928      090000
+ 1929 1545 E8000000 		call	printf
+ 1929      00
+ 1930              	.L111:
+ 1931 154a 488B0528 		movq	font_file(%rip), %rax
+ 1931      000000
+ 1932 1551 BA040000 		movl	$4, %edx
+ 1932      00
+ 1933 1556 4889C1   		movq	%rax, %rcx
+ 1934 1559 E889EBFF 		call	file_exists
+ 1934      FF
+ 1935 155e 83F001   		xorl	$1, %eax
+ 1936 1561 84C0     		testb	%al, %al
+ 1937 1563 7420     		je	.L112
+ 1938 1565 C7858C00 		movl	$3, 140(%rbp)
+ 1938      00000300 
+ 1938      0000
+ 1939 156f 488B0528 		movq	font_file(%rip), %rax
+ 1939      000000
+ 1940 1576 4889C2   		movq	%rax, %rdx
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 52
+
+
+ 1941 1579 488D0DB4 		leaq	.LC111(%rip), %rcx
+ 1941      090000
+ 1942 1580 E8000000 		call	printf
+ 1942      00
+ 1943              	.L112:
+ 1944 1585 83BD8C00 		cmpl	$0, 140(%rbp)
+ 1944      000000
+ 1945 158c 7472     		je	.L113
+ 1946 158e 488B85A8 		movq	168(%rbp), %rax
+ 1946      000000
+ 1947 1595 488B00   		movq	(%rax), %rax
+ 1948 1598 4889C1   		movq	%rax, %rcx
+ 1949 159b E810EFFF 		call	usage
+ 1949      FF
+ 1950 15a0 E8000000 		call	clock
+ 1950      00
+ 1951 15a5 488D1500 		leaq	counter(%rip), %rdx
+ 1951      000000
+ 1952 15ac 8B12     		movl	(%rdx), %edx
+ 1953 15ae 29D0     		subl	%edx, %eax
+ 1954 15b0 89C2     		movl	%eax, %edx
+ 1955 15b2 488D0500 		leaq	counter(%rip), %rax
+ 1955      000000
+ 1956 15b9 8910     		movl	%edx, (%rax)
+ 1957 15bb 488D0500 		leaq	counter(%rip), %rax
+ 1957      000000
+ 1958 15c2 8B00     		movl	(%rax), %eax
+ 1959 15c4 F20F2AC0 		cvtsi2sdl	%eax, %xmm0
+ 1960 15c8 F20F100D 		movsd	.LC64(%rip), %xmm1
+ 1960      D00C0000 
+ 1961 15d0 F20F5EC1 		divsd	%xmm1, %xmm0
+ 1962 15d4 F20F1145 		movsd	%xmm0, 80(%rbp)
+ 1962      50
+ 1963 15d9 F20F1045 		movsd	80(%rbp), %xmm0
+ 1963      50
+ 1964 15de 488B4550 		movq	80(%rbp), %rax
+ 1965 15e2 660F28C8 		movapd	%xmm0, %xmm1
+ 1966 15e6 4889C2   		movq	%rax, %rdx
+ 1967 15e9 488D0DD8 		leaq	.LC65(%rip), %rcx
+ 1967      060000
+ 1968 15f0 E8000000 		call	printf
+ 1968      00
+ 1969 15f5 8B858C00 		movl	140(%rbp), %eax
+ 1969      0000
+ 1970 15fb E9890500 		jmp	.L139
+ 1970      00
+ 1971              	.L113:
+ 1972 1600 488D0500 		leaq	arg_struct(%rip), %rax
+ 1972      000000
+ 1973 1607 0FB6400C 		movzbl	12(%rax), %eax
+ 1974 160b 84C0     		testb	%al, %al
+ 1975 160d 0F84D200 		je	.L114
+ 1975      0000
+ 1976 1613 488B1518 		movq	romheader_file(%rip), %rdx
+ 1976      000000
+ 1977 161a 488B85A8 		movq	168(%rbp), %rax
+ 1977      000000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 53
+
+
+ 1978 1621 488B00   		movq	(%rax), %rax
+ 1979 1624 4989D0   		movq	%rdx, %r8
+ 1980 1627 4889C2   		movq	%rax, %rdx
+ 1981 162a 488D0DDD 		leaq	.LC113(%rip), %rcx
+ 1981      090000
+ 1982 1631 E8000000 		call	printf
+ 1982      00
+ 1983 1636 488B1520 		movq	pif_file(%rip), %rdx
+ 1983      000000
+ 1984 163d 488B85A8 		movq	168(%rbp), %rax
+ 1984      000000
+ 1985 1644 488B00   		movq	(%rax), %rax
+ 1986 1647 4989D0   		movq	%rdx, %r8
+ 1987 164a 4889C2   		movq	%rax, %rdx
+ 1988 164d 488D0DF7 		leaq	.LC114(%rip), %rcx
+ 1988      090000
+ 1989 1654 E8000000 		call	printf
+ 1989      00
+ 1990 1659 488B1528 		movq	font_file(%rip), %rdx
+ 1990      000000
+ 1991 1660 488B85A8 		movq	168(%rbp), %rax
+ 1991      000000
+ 1992 1667 488B00   		movq	(%rax), %rax
+ 1993 166a 4989D0   		movq	%rdx, %r8
+ 1994 166d 4889C2   		movq	%rax, %rdx
+ 1995 1670 488D0D0F 		leaq	.LC115(%rip), %rcx
+ 1995      0A0000
+ 1996 1677 E8000000 		call	printf
+ 1996      00
+ 1997 167c 488B1510 		movq	bootstrap_file(%rip), %rdx
+ 1997      000000
+ 1998 1683 488B85A8 		movq	168(%rbp), %rax
+ 1998      000000
+ 1999 168a 488B00   		movq	(%rax), %rax
+ 2000 168d 4989D0   		movq	%rdx, %r8
+ 2001 1690 4889C2   		movq	%rax, %rdx
+ 2002 1693 488D0D28 		leaq	.LC116(%rip), %rcx
+ 2002      0A0000
+ 2003 169a E8000000 		call	printf
+ 2003      00
+ 2004 169f 488B1540 		movq	spec_file(%rip), %rdx
+ 2004      000000
+ 2005 16a6 488B85A8 		movq	168(%rbp), %rax
+ 2005      000000
+ 2006 16ad 488B00   		movq	(%rax), %rax
+ 2007 16b0 4989D0   		movq	%rdx, %r8
+ 2008 16b3 4889C2   		movq	%rax, %rdx
+ 2009 16b6 488D0D42 		leaq	.LC117(%rip), %rcx
+ 2009      0A0000
+ 2010 16bd E8000000 		call	printf
+ 2010      00
+ 2011 16c2 488B1530 		movq	output_file(%rip), %rdx
+ 2011      000000
+ 2012 16c9 488B85A8 		movq	168(%rbp), %rax
+ 2012      000000
+ 2013 16d0 488B00   		movq	(%rax), %rax
+ 2014 16d3 4989D0   		movq	%rdx, %r8
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 54
+
+
+ 2015 16d6 4889C2   		movq	%rax, %rdx
+ 2016 16d9 488D0D5B 		leaq	.LC118(%rip), %rcx
+ 2016      0A0000
+ 2017 16e0 E8000000 		call	printf
+ 2017      00
+ 2018              	.L114:
+ 2019 16e5 488D0576 		leaq	.LC119(%rip), %rax
+ 2019      0A0000
+ 2020 16ec 48894500 		movq	%rax, 0(%rbp)
+ 2021 16f0 488D057A 		leaq	.LC120(%rip), %rax
+ 2021      0A0000
+ 2022 16f7 48894508 		movq	%rax, 8(%rbp)
+ 2023 16fb 488D057D 		leaq	.LC121(%rip), %rax
+ 2023      0A0000
+ 2024 1702 48894510 		movq	%rax, 16(%rbp)
+ 2025 1706 488D0591 		leaq	.LC122(%rip), %rax
+ 2025      0A0000
+ 2026 170d 48894518 		movq	%rax, 24(%rbp)
+ 2027 1711 488D0594 		leaq	.LC123(%rip), %rax
+ 2027      0A0000
+ 2028 1718 48894520 		movq	%rax, 32(%rbp)
+ 2029 171c 488D0599 		leaq	.LC124(%rip), %rax
+ 2029      0A0000
+ 2030 1723 48894528 		movq	%rax, 40(%rbp)
+ 2031 1727 488B0540 		movq	spec_file(%rip), %rax
+ 2031      000000
+ 2032 172e 48894530 		movq	%rax, 48(%rbp)
+ 2033 1732 48C74538 		movq	$0, 56(%rbp)
+ 2033      00000000 
+ 2034 173a 488D0500 		leaq	arg_struct(%rip), %rax
+ 2034      000000
+ 2035 1741 0FB6400C 		movzbl	12(%rax), %eax
+ 2036 1745 84C0     		testb	%al, %al
+ 2037 1747 746E     		je	.L115
+ 2038 1749 488B85A8 		movq	168(%rbp), %rax
+ 2038      000000
+ 2039 1750 488B00   		movq	(%rax), %rax
+ 2040 1753 4889C2   		movq	%rax, %rdx
+ 2041 1756 488D0DA5 		leaq	.LC125(%rip), %rcx
+ 2041      0A0000
+ 2042 175d E8000000 		call	printf
+ 2042      00
+ 2043 1762 48C78580 		movq	$0, 128(%rbp)
+ 2043      00000000 
+ 2043      000000
+ 2044 176d EB34     		jmp	.L116
+ 2045              	.L118:
+ 2046 176f 488B8580 		movq	128(%rbp), %rax
+ 2046      000000
+ 2047 1776 488B44C5 		movq	0(%rbp,%rax,8), %rax
+ 2047      00
+ 2048 177b 4885C0   		testq	%rax, %rax
+ 2049 177e 741B     		je	.L117
+ 2050 1780 488B8580 		movq	128(%rbp), %rax
+ 2050      000000
+ 2051 1787 488B44C5 		movq	0(%rbp,%rax,8), %rax
+ 2051      00
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 55
+
+
+ 2052 178c 4889C2   		movq	%rax, %rdx
+ 2053 178f 488D0DAA 		leaq	.LC126(%rip), %rcx
+ 2053      0A0000
+ 2054 1796 E8000000 		call	printf
+ 2054      00
+ 2055              	.L117:
+ 2056 179b 48838580 		addq	$1, 128(%rbp)
+ 2056      00000001 
+ 2057              	.L116:
+ 2058 17a3 4883BD80 		cmpq	$7, 128(%rbp)
+ 2058      00000007 
+ 2059 17ab 76C2     		jbe	.L118
+ 2060 17ad B90A0000 		movl	$10, %ecx
+ 2060      00
+ 2061 17b2 E8000000 		call	putchar
+ 2061      00
+ 2062              	.L115:
+ 2063 17b7 4889E8   		movq	%rbp, %rax
+ 2064 17ba 4889C2   		movq	%rax, %rdx
+ 2065 17bd 488D0D76 		leaq	.LC119(%rip), %rcx
+ 2065      0A0000
+ 2066 17c4 E8B4E8FF 		call	exec_and_wait
+ 2066      FF
+ 2067 17c9 894568   		movl	%eax, 104(%rbp)
+ 2068 17cc 837D6800 		cmpl	$0, 104(%rbp)
+ 2069 17d0 7420     		je	.L119
+ 2070 17d2 8B4568   		movl	104(%rbp), %eax
+ 2071 17d5 89C2     		movl	%eax, %edx
+ 2072 17d7 488D0DAE 		leaq	.LC127(%rip), %rcx
+ 2072      0A0000
+ 2073 17de E8000000 		call	printf
+ 2073      00
+ 2074 17e3 8B4568   		movl	104(%rbp), %eax
+ 2075 17e6 89C2     		movl	%eax, %edx
+ 2076 17e8 B9010000 		movl	$1, %ecx
+ 2076      00
+ 2077 17ed E831EEFF 		call	exit_pgm
+ 2077      FF
+ 2078              	.L119:
+ 2079 17f2 488D0500 		leaq	arg_struct(%rip), %rax
+ 2079      000000
+ 2080 17f9 0FB6400C 		movzbl	12(%rax), %eax
+ 2081 17fd 84C0     		testb	%al, %al
+ 2082 17ff 7419     		je	.L120
+ 2083 1801 488B85A8 		movq	168(%rbp), %rax
+ 2083      000000
+ 2084 1808 488B00   		movq	(%rax), %rax
+ 2085 180b 4889C2   		movq	%rax, %rdx
+ 2086 180e 488D0DC4 		leaq	.LC128(%rip), %rcx
+ 2086      0A0000
+ 2087 1815 E8000000 		call	printf
+ 2087      00
+ 2088              	.L120:
+ 2089 181a E8F2F6FF 		call	create_cmd_file
+ 2089      FF
+ 2090 181f 894564   		movl	%eax, 100(%rbp)
+ 2091 1822 837D6400 		cmpl	$0, 100(%rbp)
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 56
+
+
+ 2092 1826 7420     		je	.L121
+ 2093 1828 8B4564   		movl	100(%rbp), %eax
+ 2094 182b 89C2     		movl	%eax, %edx
+ 2095 182d 488D0DDF 		leaq	.LC129(%rip), %rcx
+ 2095      0A0000
+ 2096 1834 E8000000 		call	printf
+ 2096      00
+ 2097 1839 8B4564   		movl	100(%rbp), %eax
+ 2098 183c 89C2     		movl	%eax, %edx
+ 2099 183e B9010000 		movl	$1, %ecx
+ 2099      00
+ 2100 1843 E8DBEDFF 		call	exit_pgm
+ 2100      FF
+ 2101              	.L121:
+ 2102 1848 E800EFFF 		call	parse_spec_file
+ 2102      FF
+ 2103 184d 894560   		movl	%eax, 96(%rbp)
+ 2104 1850 837D6000 		cmpl	$0, 96(%rbp)
+ 2105 1854 7420     		je	.L122
+ 2106 1856 8B4560   		movl	96(%rbp), %eax
+ 2107 1859 89C2     		movl	%eax, %edx
+ 2108 185b 488D0DAE 		leaq	.LC127(%rip), %rcx
+ 2108      0A0000
+ 2109 1862 E8000000 		call	printf
+ 2109      00
+ 2110 1867 8B4568   		movl	104(%rbp), %eax
+ 2111 186a 89C2     		movl	%eax, %edx
+ 2112 186c B9010000 		movl	$1, %ecx
+ 2112      00
+ 2113 1871 E8ADEDFF 		call	exit_pgm
+ 2113      FF
+ 2114              	.L122:
+ 2115 1876 488D0500 		leaq	arg_struct(%rip), %rax
+ 2115      000000
+ 2116 187d 0FB6400C 		movzbl	12(%rax), %eax
+ 2117 1881 84C0     		testb	%al, %al
+ 2118 1883 7419     		je	.L123
+ 2119 1885 488B85A8 		movq	168(%rbp), %rax
+ 2119      000000
+ 2120 188c 488B00   		movq	(%rax), %rax
+ 2121 188f 4889C2   		movq	%rax, %rdx
+ 2122 1892 488D0DFA 		leaq	.LC130(%rip), %rcx
+ 2122      0A0000
+ 2123 1899 E8000000 		call	printf
+ 2123      00
+ 2124              	.L123:
+ 2125 189e 488D0513 		leaq	.LC131(%rip), %rax
+ 2125      0B0000
+ 2126 18a5 488945D0 		movq	%rax, -48(%rbp)
+ 2127 18a9 488D0516 		leaq	.LC132(%rip), %rax
+ 2127      0B0000
+ 2128 18b0 488945D8 		movq	%rax, -40(%rbp)
+ 2129 18b4 488D052E 		leaq	.LC133(%rip), %rax
+ 2129      0B0000
+ 2130 18bb 488945E0 		movq	%rax, -32(%rbp)
+ 2131 18bf 488D053B 		leaq	.LC134(%rip), %rax
+ 2131      0B0000
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 57
+
+
+ 2132 18c6 488945E8 		movq	%rax, -24(%rbp)
+ 2133 18ca 488B0530 		movq	output_file(%rip), %rax
+ 2133      000000
+ 2134 18d1 488945F0 		movq	%rax, -16(%rbp)
+ 2135 18d5 48C745F8 		movq	$0, -8(%rbp)
+ 2135      00000000 
+ 2136 18dd 488D0500 		leaq	arg_struct(%rip), %rax
+ 2136      000000
+ 2137 18e4 0FB6400C 		movzbl	12(%rax), %eax
+ 2138 18e8 84C0     		testb	%al, %al
+ 2139 18ea 745F     		je	.L124
+ 2140 18ec 488B85A8 		movq	168(%rbp), %rax
+ 2140      000000
+ 2141 18f3 488B00   		movq	(%rax), %rax
+ 2142 18f6 4889C2   		movq	%rax, %rdx
+ 2143 18f9 488D0DA5 		leaq	.LC125(%rip), %rcx
+ 2143      0A0000
+ 2144 1900 E8000000 		call	printf
+ 2144      00
+ 2145 1905 48C74578 		movq	$0, 120(%rbp)
+ 2145      00000000 
+ 2146 190d EB2B     		jmp	.L125
+ 2147              	.L127:
+ 2148 190f 488B4578 		movq	120(%rbp), %rax
+ 2149 1913 488B44C5 		movq	-48(%rbp,%rax,8), %rax
+ 2149      D0
+ 2150 1918 4885C0   		testq	%rax, %rax
+ 2151 191b 7418     		je	.L126
+ 2152 191d 488B4578 		movq	120(%rbp), %rax
+ 2153 1921 488B44C5 		movq	-48(%rbp,%rax,8), %rax
+ 2153      D0
+ 2154 1926 4889C2   		movq	%rax, %rdx
+ 2155 1929 488D0DAA 		leaq	.LC126(%rip), %rcx
+ 2155      0A0000
+ 2156 1930 E8000000 		call	printf
+ 2156      00
+ 2157              	.L126:
+ 2158 1935 48834578 		addq	$1, 120(%rbp)
+ 2158      01
+ 2159              	.L125:
+ 2160 193a 48837D78 		cmpq	$7, 120(%rbp)
+ 2160      07
+ 2161 193f 76CE     		jbe	.L127
+ 2162 1941 B90A0000 		movl	$10, %ecx
+ 2162      00
+ 2163 1946 E8000000 		call	putchar
+ 2163      00
+ 2164              	.L124:
+ 2165 194b 488D45D0 		leaq	-48(%rbp), %rax
+ 2166 194f 4889C2   		movq	%rax, %rdx
+ 2167 1952 488D0D13 		leaq	.LC131(%rip), %rcx
+ 2167      0B0000
+ 2168 1959 E81FE7FF 		call	exec_and_wait
+ 2168      FF
+ 2169 195e 89455C   		movl	%eax, 92(%rbp)
+ 2170 1961 837D5C00 		cmpl	$0, 92(%rbp)
+ 2171 1965 7420     		je	.L128
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 58
+
+
+ 2172 1967 8B455C   		movl	92(%rbp), %eax
+ 2173 196a 89C2     		movl	%eax, %edx
+ 2174 196c 488D0D3E 		leaq	.LC135(%rip), %rcx
+ 2174      0B0000
+ 2175 1973 E8000000 		call	printf
+ 2175      00
+ 2176 1978 8B455C   		movl	92(%rbp), %eax
+ 2177 197b 89C2     		movl	%eax, %edx
+ 2178 197d B9010000 		movl	$1, %ecx
+ 2178      00
+ 2179 1982 E89CECFF 		call	exit_pgm
+ 2179      FF
+ 2180              	.L128:
+ 2181 1987 488D0500 		leaq	arg_struct(%rip), %rax
+ 2181      000000
+ 2182 198e 0FB6400C 		movzbl	12(%rax), %eax
+ 2183 1992 84C0     		testb	%al, %al
+ 2184 1994 7419     		je	.L129
+ 2185 1996 488B85A8 		movq	168(%rbp), %rax
+ 2185      000000
+ 2186 199d 488B00   		movq	(%rax), %rax
+ 2187 19a0 4889C2   		movq	%rax, %rdx
+ 2188 19a3 488D0D51 		leaq	.LC136(%rip), %rcx
+ 2188      0B0000
+ 2189 19aa E8000000 		call	printf
+ 2189      00
+ 2190              	.L129:
+ 2191 19af 488D056C 		leaq	.LC137(%rip), %rax
+ 2191      0B0000
+ 2192 19b6 488945B0 		movq	%rax, -80(%rbp)
+ 2193 19ba 488D056F 		leaq	.LC138(%rip), %rax
+ 2193      0B0000
+ 2194 19c1 488945B8 		movq	%rax, -72(%rbp)
+ 2195 19c5 488D057B 		leaq	.LC139(%rip), %rax
+ 2195      0B0000
+ 2196 19cc 488945C0 		movq	%rax, -64(%rbp)
+ 2197 19d0 48C745C8 		movq	$0, -56(%rbp)
+ 2197      00000000 
+ 2198 19d8 488D0500 		leaq	arg_struct(%rip), %rax
+ 2198      000000
+ 2199 19df 0FB6400C 		movzbl	12(%rax), %eax
+ 2200 19e3 84C0     		testb	%al, %al
+ 2201 19e5 7478     		je	.L130
+ 2202 19e7 488B85A8 		movq	168(%rbp), %rax
+ 2202      000000
+ 2203 19ee 488B00   		movq	(%rax), %rax
+ 2204 19f1 4889C2   		movq	%rax, %rdx
+ 2205 19f4 488D0DA5 		leaq	.LC125(%rip), %rcx
+ 2205      0A0000
+ 2206 19fb E8000000 		call	printf
+ 2206      00
+ 2207 1a00 48C74570 		movq	$0, 112(%rbp)
+ 2207      00000000 
+ 2208 1a08 EB2B     		jmp	.L131
+ 2209              	.L133:
+ 2210 1a0a 488B4570 		movq	112(%rbp), %rax
+ 2211 1a0e 488B44C5 		movq	-80(%rbp,%rax,8), %rax
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 59
+
+
+ 2211      B0
+ 2212 1a13 4885C0   		testq	%rax, %rax
+ 2213 1a16 7418     		je	.L132
+ 2214 1a18 488B4570 		movq	112(%rbp), %rax
+ 2215 1a1c 488B44C5 		movq	-80(%rbp,%rax,8), %rax
+ 2215      B0
+ 2216 1a21 4889C2   		movq	%rax, %rdx
+ 2217 1a24 488D0DAA 		leaq	.LC126(%rip), %rcx
+ 2217      0A0000
+ 2218 1a2b E8000000 		call	printf
+ 2218      00
+ 2219              	.L132:
+ 2220 1a30 48834570 		addq	$1, 112(%rbp)
+ 2220      01
+ 2221              	.L131:
+ 2222 1a35 48837D70 		cmpq	$7, 112(%rbp)
+ 2222      07
+ 2223 1a3a 76CE     		jbe	.L133
+ 2224 1a3c B90A0000 		movl	$10, %ecx
+ 2224      00
+ 2225 1a41 E8000000 		call	putchar
+ 2225      00
+ 2226 1a46 488B85A8 		movq	168(%rbp), %rax
+ 2226      000000
+ 2227 1a4d 488B00   		movq	(%rax), %rax
+ 2228 1a50 4889C2   		movq	%rax, %rdx
+ 2229 1a53 488D0D83 		leaq	.LC140(%rip), %rcx
+ 2229      0B0000
+ 2230 1a5a E8000000 		call	printf
+ 2230      00
+ 2231              	.L130:
+ 2232 1a5f 488D45B0 		leaq	-80(%rbp), %rax
+ 2233 1a63 4889C2   		movq	%rax, %rdx
+ 2234 1a66 488D0D6C 		leaq	.LC137(%rip), %rcx
+ 2234      0B0000
+ 2235 1a6d E80BE6FF 		call	exec_and_wait
+ 2235      FF
+ 2236 1a72 894558   		movl	%eax, 88(%rbp)
+ 2237 1a75 837D5800 		cmpl	$0, 88(%rbp)
+ 2238 1a79 740F     		je	.L134
+ 2239 1a7b 8B4558   		movl	88(%rbp), %eax
+ 2240 1a7e 89C2     		movl	%eax, %edx
+ 2241 1a80 B9010000 		movl	$1, %ecx
+ 2241      00
+ 2242 1a85 E899EBFF 		call	exit_pgm
+ 2242      FF
+ 2243              	.L134:
+ 2244 1a8a 488D0500 		leaq	arg_struct(%rip), %rax
+ 2244      000000
+ 2245 1a91 0FB6400C 		movzbl	12(%rax), %eax
+ 2246 1a95 84C0     		testb	%al, %al
+ 2247 1a97 7436     		je	.L135
+ 2248 1a99 488B0D30 		movq	output_file(%rip), %rcx
+ 2248      000000
+ 2249 1aa0 488B85A8 		movq	168(%rbp), %rax
+ 2249      000000
+ 2250 1aa7 488B00   		movq	(%rax), %rax
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 60
+
+
+ 2251 1aaa 488D15B5 		leaq	.LC143(%rip), %rdx
+ 2251      0B0000
+ 2252 1ab1 48895424 		movq	%rdx, 32(%rsp)
+ 2252      20
+ 2253 1ab6 4989C9   		movq	%rcx, %r9
+ 2254 1ab9 4C8D059E 		leaq	.LC141(%rip), %r8
+ 2254      0B0000
+ 2255 1ac0 4889C2   		movq	%rax, %rdx
+ 2256 1ac3 488D0DA1 		leaq	.LC142(%rip), %rcx
+ 2256      0B0000
+ 2257 1aca E8000000 		call	printf
+ 2257      00
+ 2258              	.L135:
+ 2259 1acf 488D0500 		leaq	arg_struct(%rip), %rax
+ 2259      000000
+ 2260 1ad6 0FB6400C 		movzbl	12(%rax), %eax
+ 2261 1ada 84C0     		testb	%al, %al
+ 2262 1adc 7423     		je	.L136
+ 2263 1ade 488B1518 		movq	romheader_file(%rip), %rdx
+ 2263      000000
+ 2264 1ae5 488B85A8 		movq	168(%rbp), %rax
+ 2264      000000
+ 2265 1aec 488B00   		movq	(%rax), %rax
+ 2266 1aef 4989D0   		movq	%rdx, %r8
+ 2267 1af2 4889C2   		movq	%rax, %rdx
+ 2268 1af5 488D0DBB 		leaq	.LC144(%rip), %rcx
+ 2268      0B0000
+ 2269 1afc E8000000 		call	printf
+ 2269      00
+ 2270              	.L136:
+ 2271 1b01 488D0500 		leaq	arg_struct(%rip), %rax
+ 2271      000000
+ 2272 1b08 0FB6400C 		movzbl	12(%rax), %eax
+ 2273 1b0c 84C0     		testb	%al, %al
+ 2274 1b0e 7423     		je	.L137
+ 2275 1b10 488B1510 		movq	bootstrap_file(%rip), %rdx
+ 2275      000000
+ 2276 1b17 488B85A8 		movq	168(%rbp), %rax
+ 2276      000000
+ 2277 1b1e 488B00   		movq	(%rax), %rax
+ 2278 1b21 4989D0   		movq	%rdx, %r8
+ 2279 1b24 4889C2   		movq	%rax, %rdx
+ 2280 1b27 488D0DBB 		leaq	.LC144(%rip), %rcx
+ 2280      0B0000
+ 2281 1b2e E8000000 		call	printf
+ 2281      00
+ 2282              	.L137:
+ 2283 1b33 488D0500 		leaq	arg_struct(%rip), %rax
+ 2283      000000
+ 2284 1b3a 0FB6400C 		movzbl	12(%rax), %eax
+ 2285 1b3e 84C0     		testb	%al, %al
+ 2286 1b40 7423     		je	.L138
+ 2287 1b42 488B1528 		movq	font_file(%rip), %rdx
+ 2287      000000
+ 2288 1b49 488B85A8 		movq	168(%rbp), %rax
+ 2288      000000
+ 2289 1b50 488B00   		movq	(%rax), %rax
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 61
+
+
+ 2290 1b53 4989D0   		movq	%rdx, %r8
+ 2291 1b56 4889C2   		movq	%rax, %rdx
+ 2292 1b59 488D0DBB 		leaq	.LC144(%rip), %rcx
+ 2292      0B0000
+ 2293 1b60 E8000000 		call	printf
+ 2293      00
+ 2294              	.L138:
+ 2295 1b65 488D0DCB 		leaq	.LC145(%rip), %rcx
+ 2295      0B0000
+ 2296 1b6c E8000000 		call	puts
+ 2296      00
+ 2297 1b71 8B858C00 		movl	140(%rbp), %eax
+ 2297      0000
+ 2298 1b77 89C2     		movl	%eax, %edx
+ 2299 1b79 B9000000 		movl	$0, %ecx
+ 2299      00
+ 2300 1b7e E8A0EAFF 		call	exit_pgm
+ 2300      FF
+ 2301 1b83 8B858C00 		movl	140(%rbp), %eax
+ 2301      0000
+ 2302              	.L139:
+ 2303 1b89 4881C410 		addq	$272, %rsp
+ 2303      010000
+ 2304 1b90 5D       		popq	%rbp
+ 2305 1b91 C3       		ret
+ 2306              		.seh_endproc
+ 2307 1b92 90909090 		.section .rdata,"dr"
+ 2307      90909090 
+ 2307      90909090 
+ 2307      9090
+ 2308 0ccc 00000000 		.align 8
+ 2309              	.LC64:
+ 2310 0cd0 00000000 		.long	0
+ 2311 0cd4 00408F40 		.long	1083129856
+ 2312              		.ident	"GCC: (GNU) 9.1.0"
+ 2313              		.def	fgetc;	.scl	2;	.type	32;	.endef
+ 2314              		.def	ungetc;	.scl	2;	.type	32;	.endef
+ 2315              		.def	printf;	.scl	2;	.type	32;	.endef
+ 2316              		.def	spawnvp;	.scl	2;	.type	32;	.endef
+ 2317              		.def	perror;	.scl	2;	.type	32;	.endef
+ 2318              		.def	access;	.scl	2;	.type	32;	.endef
+ 2319              		.def	getcwd;	.scl	2;	.type	32;	.endef
+ 2320              		.def	strlen;	.scl	2;	.type	32;	.endef
+ 2321              		.def	puts;	.scl	2;	.type	32;	.endef
+ 2322              		.def	clock;	.scl	2;	.type	32;	.endef
+ 2323              		.def	exit;	.scl	2;	.type	32;	.endef
+ 2324              		.def	sprintf;	.scl	2;	.type	32;	.endef
+ 2325              		.def	fopen;	.scl	2;	.type	32;	.endef
+ 2326              		.def	strncmp;	.scl	2;	.type	32;	.endef
+ 2327              		.def	calloc;	.scl	2;	.type	32;	.endef
+ 2328              		.def	fscanf;	.scl	2;	.type	32;	.endef
+ 2329              		.def	memcpy;	.scl	2;	.type	32;	.endef
+ 2330              		.def	free;	.scl	2;	.type	32;	.endef
+ 2331              		.def	atoi;	.scl	2;	.type	32;	.endef
+ 2332              		.def	fclose;	.scl	2;	.type	32;	.endef
+ 2333              		.def	strcmp;	.scl	2;	.type	32;	.endef
+ 2334              		.def	strtol;	.scl	2;	.type	32;	.endef
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 62
+
+
+ 2335              		.def	getopt;	.scl	2;	.type	32;	.endef
+ 2336              		.def	putchar;	.scl	2;	.type	32;	.endef
+ 2337 0cd8 00000000 		.section	.rdata$.refptr.opterr, "dr"
+ 2337      00000000 
+ 2338              		.globl	.refptr.opterr
+ 2339              		.linkonce	discard
+ 2340              	.refptr.opterr:
+ 2341 0000 00000000 		.quad	opterr
+ 2341      00000000 
+ 2342 0008 00000000 		.section	.rdata$.refptr.optopt, "dr"
+ 2342      00000000 
+ 2343              		.globl	.refptr.optopt
+ 2344              		.linkonce	discard
+ 2345              	.refptr.optopt:
+ 2346 0000 00000000 		.quad	optopt
+ 2346      00000000 
+ 2347 0008 00000000 		.section	.rdata$.refptr.optarg, "dr"
+ 2347      00000000 
+ 2348              		.globl	.refptr.optarg
+ 2349              		.linkonce	discard
+ 2350              	.refptr.optarg:
+ 2351 0000 00000000 		.quad	optarg
+ 2351      00000000 
+ 2352 0008 00000000 		.section	.rdata$.refptr.optind, "dr"
+ 2352      00000000 
+ 2353              		.globl	.refptr.optind
+ 2354              		.linkonce	discard
+ 2355              	.refptr.optind:
+ 2356 0000 00000000 		.quad	optind
+ 2356      00000000 
+ 2356      00000000 
+ 2356      00000000 
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 63
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 makerom.c
+                            *COM*:0000000000000060 arg_struct
+                            *COM*:0000000000000010 parsed_spec
+                            *COM*:0000000000000004 conversion_int
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:12     .data:0000000000000000 define_str
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:16     .data:0000000000000008 include_str
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:24     .data:0000000000000010 bootstrap_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:32     .data:0000000000000018 romheader_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:40     .data:0000000000000020 pif_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:48     .data:0000000000000028 font_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:56     .data:0000000000000030 output_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:60     .data:0000000000000038 symbol_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:68     .data:0000000000000040 spec_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:72     .data:0000000000000048 directory_str
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:76     .data:0000000000000050 resource_directory
+                            *COM*:0000000000000004 counter
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:83     .text:0000000000000000 fpeek
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:107    .text:000000000000002f mystrcat
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:150    .text:000000000000007d exec_and_wait
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:200    .text:00000000000000e7 file_exists
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:254    .text:000000000000019c file_exists_path
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:293    .text:00000000000001bf file_exists_current_dir
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:401    .text:0000000000000339 print_segment
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:588    .text:00000000000004b0 usage
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:671    .text:0000000000000623 exit_pgm
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:721    .text:00000000000006ab remove_quotes
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:836    .text:000000000000074d parse_spec_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:1367   .text:0000000000000f11 create_cmd_file
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:1495   .text:0000000000000f29 main
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:2355   .rdata$.refptr.optind:0000000000000000 .refptr.optind
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:2350   .rdata$.refptr.optarg:0000000000000000 .refptr.optarg
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:2345   .rdata$.refptr.optopt:0000000000000000 .refptr.optopt
+C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s:2340   .rdata$.refptr.opterr:0000000000000000 .refptr.opterr
+
+UNDEFINED SYMBOLS
+__main
+fgetc
+ungetc
+printf
+spawnvp
+perror
+access
+getcwd
+strlen
+puts
+clock
+exit
+sprintf
+fopen
+strncmp
+calloc
+fscanf
+memcpy
+free
+atoi
+fclose
+GAS LISTING C:\Users\jwall\AppData\Local\Temp\1\ccuT1jjf.s 			page 64
+
+
+strcmp
+strtol
+getopt
+putchar
+opterr
+optopt
+optarg
+optind

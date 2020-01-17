@@ -1,0 +1,20 @@
+beginseg
+        name "program"
+        flags BOOT OBJECT
+        entry mainproc
+        stack mainThreadStack + 0x1000
+        include "rotate.o"
+endseg
+
+beginseg
+        name "static"
+        flags OBJECT
+        number 1
+        include "square.o"
+endseg
+
+beginwave
+        name "rotate"
+        include "program"
+        include "static"
+endwave

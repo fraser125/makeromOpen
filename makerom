@@ -1,0 +1,1336 @@
+	.file	"makerom.c"
+	.text
+	.comm	arg_struct, 96, 5
+	.comm	conversion_int, 4, 2
+	.globl	define_str
+	.section .rdata,"dr"
+.LC0:
+	.ascii "\0"
+	.data
+	.align 8
+define_str:
+	.quad	.LC0
+	.globl	include_str
+	.align 8
+include_str:
+	.quad	.LC0
+	.globl	bootstrap_file
+	.section .rdata,"dr"
+.LC1:
+	.ascii "Boot\0"
+	.data
+	.align 8
+bootstrap_file:
+	.quad	.LC1
+	.globl	romheader_file
+	.section .rdata,"dr"
+.LC2:
+	.ascii "romheader\0"
+	.data
+	.align 8
+romheader_file:
+	.quad	.LC2
+	.globl	pif_file
+	.section .rdata,"dr"
+.LC3:
+	.ascii "pif2Boot\0"
+	.data
+	.align 8
+pif_file:
+	.quad	.LC3
+	.globl	font_file
+	.section .rdata,"dr"
+.LC4:
+	.ascii "font\0"
+	.data
+	.align 8
+font_file:
+	.quad	.LC4
+	.globl	output_file
+	.section .rdata,"dr"
+.LC5:
+	.ascii "rom\0"
+	.data
+	.align 8
+output_file:
+	.quad	.LC5
+	.globl	symbol_file
+	.align 8
+symbol_file:
+	.quad	.LC0
+	.globl	spec_file
+	.section .rdata,"dr"
+.LC6:
+	.ascii "spec\0"
+	.data
+	.align 8
+spec_file:
+	.quad	.LC6
+	.globl	directory_str
+	.align 8
+directory_str:
+	.quad	.LC0
+	.globl	resource_directory
+	.align 8
+resource_directory:
+	.quad	.LC0
+	.text
+	.globl	mystrcat
+	.def	mystrcat;	.scl	2;	.type	32;	.endef
+	.seh_proc	mystrcat
+mystrcat:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	movq	%rsp, %rbp
+	.seh_setframe	%rbp, 0
+	.seh_endprologue
+	movq	%rcx, 16(%rbp)
+	movq	%rdx, 24(%rbp)
+	jmp	.L2
+.L3:
+	addq	$1, 16(%rbp)
+.L2:
+	movq	16(%rbp), %rax
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	jne	.L3
+	nop
+.L4:
+	movq	24(%rbp), %rdx
+	leaq	1(%rdx), %rax
+	movq	%rax, 24(%rbp)
+	movq	16(%rbp), %rax
+	leaq	1(%rax), %rcx
+	movq	%rcx, 16(%rbp)
+	movzbl	(%rdx), %edx
+	movb	%dl, (%rax)
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	jne	.L4
+	subq	$1, 16(%rbp)
+	movq	16(%rbp), %rax
+	popq	%rbp
+	ret
+	.seh_endproc
+	.globl	exec_and_wait
+	.def	exec_and_wait;	.scl	2;	.type	32;	.endef
+	.seh_proc	exec_and_wait
+exec_and_wait:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	movq	%rsp, %rbp
+	.seh_setframe	%rbp, 0
+	subq	$48, %rsp
+	.seh_stackalloc	48
+	.seh_endprologue
+	movq	%rcx, 16(%rbp)
+	movq	%rdx, 24(%rbp)
+	movl	$0, -4(%rbp)
+	call	fork
+	cltq
+	movq	%rax, -16(%rbp)
+	cmpq	$0, -16(%rbp)
+	jne	.L7
+	movq	24(%rbp), %rax
+	movq	%rax, %rdx
+	movq	16(%rbp), %rcx
+	call	execvp
+	movl	$1, %ecx
+	call	_exit
+.L7:
+	movl	-4(%rbp), %eax
+	addq	$48, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.section .rdata,"dr"
+.LC7:
+	.ascii "\11Filename : %s\12\0"
+.LC8:
+	.ascii "\11File Exists: %d\12\0"
+.LC9:
+	.ascii "\11File Read : %d\12\0"
+.LC10:
+	.ascii "\11File Write : %d\12\0"
+.LC11:
+	.ascii "\11File Execute : %d\12\0"
+	.text
+	.globl	file_exists
+	.def	file_exists;	.scl	2;	.type	32;	.endef
+	.seh_proc	file_exists
+file_exists:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	movq	%rsp, %rbp
+	.seh_setframe	%rbp, 0
+	subq	$32, %rsp
+	.seh_stackalloc	32
+	.seh_endprologue
+	movq	%rcx, 16(%rbp)
+	movl	%edx, 24(%rbp)
+	movq	16(%rbp), %rdx
+	leaq	.LC7(%rip), %rcx
+	call	printf
+	movl	$0, %edx
+	movq	16(%rbp), %rcx
+	call	access
+	addl	$1, %eax
+	movl	%eax, %edx
+	leaq	.LC8(%rip), %rcx
+	call	printf
+	movl	$4, %edx
+	movq	16(%rbp), %rcx
+	call	access
+	addl	$1, %eax
+	movl	%eax, %edx
+	leaq	.LC9(%rip), %rcx
+	call	printf
+	movl	$2, %edx
+	movq	16(%rbp), %rcx
+	call	access
+	addl	$1, %eax
+	movl	%eax, %edx
+	leaq	.LC10(%rip), %rcx
+	call	printf
+	movl	$1, %edx
+	movq	16(%rbp), %rcx
+	call	access
+	addl	$1, %eax
+	movl	%eax, %edx
+	leaq	.LC11(%rip), %rcx
+	call	printf
+	movl	24(%rbp), %eax
+	movl	%eax, %edx
+	movq	16(%rbp), %rcx
+	call	access
+	cmpl	$-1, %eax
+	setne	%al
+	addq	$32, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.globl	file_exists_path
+	.def	file_exists_path;	.scl	2;	.type	32;	.endef
+	.seh_proc	file_exists_path
+file_exists_path:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	movq	%rsp, %rbp
+	.seh_setframe	%rbp, 0
+	subq	$32, %rsp
+	.seh_stackalloc	32
+	.seh_endprologue
+	movq	%rcx, 16(%rbp)
+	movl	%edx, 24(%rbp)
+	movl	24(%rbp), %eax
+	movl	%eax, %edx
+	movq	16(%rbp), %rcx
+	call	file_exists
+	addq	$32, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.section .rdata,"dr"
+.LC12:
+	.ascii "\\\0"
+.LC13:
+	.ascii "\11PATH MAX: %d\12\0"
+.LC14:
+	.ascii "\11File name: %s\12\0"
+.LC15:
+	.ascii "\11File name length: %d\12\0"
+.LC16:
+	.ascii "\11Current working dir: %s\12\0"
+.LC17:
+	.ascii "\11dir name length: %d\12\0"
+.LC18:
+	.ascii "\11Path is Null %d\12\0"
+.LC19:
+	.ascii "\11Full dir and file: %s\12\0"
+	.text
+	.globl	file_exists_current_dir
+	.def	file_exists_current_dir;	.scl	2;	.type	32;	.endef
+	.seh_proc	file_exists_current_dir
+file_exists_current_dir:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	subq	$336, %rsp
+	.seh_stackalloc	336
+	leaq	128(%rsp), %rbp
+	.seh_setframe	%rbp, 128
+	.seh_endprologue
+	movq	%rcx, 224(%rbp)
+	movl	%edx, 232(%rbp)
+	movl	$0, %edx
+	movl	$0, %ecx
+	call	getcwd
+	movq	%rax, 200(%rbp)
+	leaq	-96(%rbp), %rax
+	movq	%rax, 192(%rbp)
+	movb	$0, -96(%rbp)
+	leaq	.LC12(%rip), %rax
+	movq	%rax, 184(%rbp)
+	movq	200(%rbp), %rdx
+	movq	192(%rbp), %rax
+	movq	%rax, %rcx
+	call	mystrcat
+	movq	%rax, 192(%rbp)
+	movq	184(%rbp), %rdx
+	movq	192(%rbp), %rax
+	movq	%rax, %rcx
+	call	mystrcat
+	movq	%rax, 192(%rbp)
+	movq	192(%rbp), %rax
+	movq	224(%rbp), %rdx
+	movq	%rax, %rcx
+	call	mystrcat
+	movq	%rax, 192(%rbp)
+	movq	224(%rbp), %rcx
+	call	strlen
+	movl	%eax, 180(%rbp)
+	movq	200(%rbp), %rax
+	movq	%rax, %rcx
+	call	strlen
+	movl	%eax, 176(%rbp)
+	movl	$260, %edx
+	leaq	.LC13(%rip), %rcx
+	call	printf
+	movq	224(%rbp), %rdx
+	leaq	.LC14(%rip), %rcx
+	call	printf
+	movl	180(%rbp), %eax
+	movl	%eax, %edx
+	leaq	.LC15(%rip), %rcx
+	call	printf
+	movq	200(%rbp), %rax
+	movq	%rax, %rdx
+	leaq	.LC16(%rip), %rcx
+	call	printf
+	movl	176(%rbp), %eax
+	movl	%eax, %edx
+	leaq	.LC17(%rip), %rcx
+	call	printf
+	cmpq	$0, 192(%rbp)
+	sete	%al
+	movzbl	%al, %eax
+	movl	%eax, %edx
+	leaq	.LC18(%rip), %rcx
+	call	printf
+	leaq	-96(%rbp), %rax
+	movq	%rax, %rdx
+	leaq	.LC19(%rip), %rcx
+	call	printf
+	movl	232(%rbp), %edx
+	leaq	-96(%rbp), %rax
+	movq	%rax, %rcx
+	call	file_exists
+	addq	$336, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.section .rdata,"dr"
+	.align 8
+.LC20:
+	.ascii "usage:%s [option(s)] specfile\15\12\0"
+.LC21:
+	.ascii "64DD\15\0"
+	.align 8
+.LC22:
+	.ascii "\11-DD64         : set DD64 mode (makedisk mode)\15\0"
+	.align 8
+.LC23:
+	.ascii "\11-t<disktype>  : set disk type ( Only use DD64 mode )\15\0"
+.LC24:
+	.ascii "Passed to gcc\15\0"
+	.align 8
+.LC25:
+	.ascii "\11-Dname[=def]  : passed to cpp for use during its invocation\15\0"
+	.align 8
+.LC26:
+	.ascii "\11-Idirectory   : passed to cpp for use during its invocation\15\0"
+	.align 8
+.LC27:
+	.ascii "\11-Uname        : passed to cpp for use during its invocation\15\0"
+.LC28:
+	.ascii "Flags\15\0"
+	.align 8
+.LC29:
+	.ascii "\11-d            : debug mode ( don't remove temporary files )\15\0"
+	.align 8
+.LC30:
+	.ascii "\11-E            : link error(undef. symbol) stop mode\15\0"
+	.align 8
+.LC31:
+	.ascii "\11-m            : print a link editor map to stdout\15\0"
+	.align 8
+.LC32:
+	.ascii "\11-o            : provided for compatibility with other tools\15\0"
+	.align 8
+.LC33:
+	.ascii "\11-w            : disable overlay warning display\15\0"
+.LC34:
+	.ascii "Files\15\0"
+	.align 8
+.LC35:
+	.ascii "\11-b<filename>  : set bootstrap file     [Boot]\15\0"
+	.align 8
+.LC36:
+	.ascii "\11-h<filename>  : set romheader file     [romheader]\15\0"
+	.align 8
+.LC37:
+	.ascii "\11-p<filename>  : set pif bootstrap file [pif2Boot]\15\0"
+	.align 8
+.LC38:
+	.ascii "\11-F<filename>  : set font file          [font]\15\0"
+	.align 8
+.LC39:
+	.ascii "\11-L<directory> : set resource directory [/usr/lib/PR]\15\0"
+	.align 8
+.LC40:
+	.ascii "\11-r<filename>  : set output file        [rom]\15\0"
+	.align 8
+.LC41:
+	.ascii "\11-e<filename>  : set output symbol file\15\0"
+	.align 8
+.LC42:
+	.ascii "\11@<filename>   : specify indirect file \15\0"
+.LC43:
+	.ascii "Options\15\0"
+	.align 8
+.LC44:
+	.ascii "\11-s<romsize>   : set minimum rom size (Mbits)\15\0"
+.LC45:
+	.ascii "environment\15\0"
+	.align 8
+.LC46:
+	.ascii "\11MILD_OPT      : passed to ld\15\0"
+	.align 8
+.LC47:
+	.ascii "\11GCCDIR        : tool directory $(GCCDIR)/mipse/bin\15\0"
+	.align 8
+.LC48:
+	.ascii "\11TEMP          : temporary directory\15\0"
+	.text
+	.globl	usage
+	.def	usage;	.scl	2;	.type	32;	.endef
+	.seh_proc	usage
+usage:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	movq	%rsp, %rbp
+	.seh_setframe	%rbp, 0
+	subq	$32, %rsp
+	.seh_stackalloc	32
+	.seh_endprologue
+	movq	%rcx, 16(%rbp)
+	movq	16(%rbp), %rdx
+	leaq	.LC20(%rip), %rcx
+	call	printf
+	leaq	.LC21(%rip), %rcx
+	call	puts
+	leaq	.LC22(%rip), %rcx
+	call	puts
+	leaq	.LC23(%rip), %rcx
+	call	puts
+	leaq	.LC24(%rip), %rcx
+	call	puts
+	leaq	.LC25(%rip), %rcx
+	call	puts
+	leaq	.LC26(%rip), %rcx
+	call	puts
+	leaq	.LC27(%rip), %rcx
+	call	puts
+	leaq	.LC28(%rip), %rcx
+	call	puts
+	leaq	.LC29(%rip), %rcx
+	call	puts
+	leaq	.LC30(%rip), %rcx
+	call	puts
+	leaq	.LC31(%rip), %rcx
+	call	puts
+	leaq	.LC32(%rip), %rcx
+	call	puts
+	leaq	.LC33(%rip), %rcx
+	call	puts
+	leaq	.LC34(%rip), %rcx
+	call	puts
+	leaq	.LC35(%rip), %rcx
+	call	puts
+	leaq	.LC36(%rip), %rcx
+	call	puts
+	leaq	.LC37(%rip), %rcx
+	call	puts
+	leaq	.LC38(%rip), %rcx
+	call	puts
+	leaq	.LC39(%rip), %rcx
+	call	puts
+	leaq	.LC40(%rip), %rcx
+	call	puts
+	leaq	.LC41(%rip), %rcx
+	call	puts
+	leaq	.LC42(%rip), %rcx
+	call	puts
+	leaq	.LC43(%rip), %rcx
+	call	puts
+	leaq	.LC44(%rip), %rcx
+	call	puts
+	leaq	.LC45(%rip), %rcx
+	call	puts
+	leaq	.LC46(%rip), %rcx
+	call	puts
+	leaq	.LC47(%rip), %rcx
+	call	puts
+	leaq	.LC48(%rip), %rcx
+	call	puts
+	nop
+	addq	$32, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.def	__main;	.scl	2;	.type	32;	.endef
+	.section .rdata,"dr"
+.LC49:
+	.ascii "Inspired By:\15\0"
+	.align 8
+.LC50:
+	.ascii "rom image link editor version 1.01 (gcc32) Copyright (c) 1997 Hudson/KMC\15\0"
+.LC51:
+	.ascii "\11argc %d\12\0"
+.LC52:
+	.ascii "\11arg0 %s\12\0"
+	.align 8
+.LC54:
+	.ascii "Elapsed: %f seconds to execute \12\0"
+.LC55:
+	.ascii "\11opt: %c\15\12\0"
+.LC56:
+	.ascii "\11optind: %d\15\12\0"
+.LC57:
+	.ascii "\11optarg: %s\15\12\0"
+.LC58:
+	.ascii "\11optopt: %c\15\12\0"
+.LC59:
+	.ascii "\11opterr: %d\15\12\0"
+	.align 8
+.LC60:
+	.ascii "\11Missing value for parameter %c\15\12\0"
+	.align 8
+.LC61:
+	.ascii "\11Argument %c : Invalid value %s\12\0"
+.LC62:
+	.ascii "D64\0"
+.LC63:
+	.ascii "option: %c \12\0"
+.LC64:
+	.ascii "directory: %s\12\0"
+.LC65:
+	.ascii "unknown option: %c\12\0"
+.LC66:
+	.ascii "unknown value: %s\15\12\0"
+	.align 8
+.LC67:
+	.ascii ":b:B:dD:e:Ef:F:h:I:L:mo:p:r:s:t:U:w\0"
+.LC68:
+	.ascii "File not found %s\12\0"
+.LC69:
+	.ascii "File not writable %s\12\0"
+.LC70:
+	.ascii "%s: using rom header: %s\12\0"
+.LC71:
+	.ascii "%s: using pif2Boot: %s\12\0"
+.LC72:
+	.ascii "%s: using font file: %s\12\0"
+.LC73:
+	.ascii "%s: using boot strap: %s\12\0"
+.LC74:
+	.ascii "%s: using spec file: %s\12\0"
+.LC75:
+	.ascii "%s: using output file: %s\12\0"
+.LC76:
+	.ascii "cpp\0"
+	.align 8
+.LC77:
+	.ascii "%s: %s -D_LANGUAGE_MAKEROM %s.cvt %s\12\0"
+.LC78:
+	.ascii "*.spc\0"
+.LC79:
+	.ascii "-D_LANGUAGE_MAKEROM\0"
+.LC80:
+	.ascii "%s: creating command file\12\0"
+.LC81:
+	.ascii "%s: execute link editor\12\0"
+.LC82:
+	.ascii "*.cmd\0"
+.LC83:
+	.ascii "ld\0"
+	.align 8
+.LC84:
+	.ascii "%s: %s -G 0 -noinhibit-exec -T %s -o blocks.out\12\0"
+.LC85:
+	.ascii "-G 0 -noinhibit-exec -T\0"
+.LC86:
+	.ascii "-o\0"
+.LC87:
+	.ascii "%s: creating entry source\12\0"
+.LC88:
+	.ascii "-non_shared\0"
+.LC89:
+	.ascii "as\0"
+.LC90:
+	.ascii "%s: %s %s %s\12\0"
+.LC91:
+	.ascii "*.s\0"
+.LC92:
+	.ascii "%s: assemble entry source\12\0"
+.LC93:
+	.ascii "ls\0"
+.LC94:
+	.ascii "%s: %s -R %s -o %s\12\0"
+.LC95:
+	.ascii "a.out\0"
+.LC96:
+	.ascii "%s: writing %s\12\0"
+.LC97:
+	.ascii "Complete\0"
+	.text
+	.globl	main
+	.def	main;	.scl	2;	.type	32;	.endef
+	.seh_proc	main
+main:
+	pushq	%rbp
+	.seh_pushreg	%rbp
+	movq	%rsp, %rbp
+	.seh_setframe	%rbp, 0
+	subq	$176, %rsp
+	.seh_stackalloc	176
+	.seh_endprologue
+	movl	%ecx, 16(%rbp)
+	movq	%rdx, 24(%rbp)
+	call	__main
+	call	clock
+	movl	%eax, -8(%rbp)
+	movl	$0, -4(%rbp)
+	leaq	.LC49(%rip), %rcx
+	call	puts
+	leaq	.LC50(%rip), %rcx
+	call	puts
+	movl	16(%rbp), %edx
+	leaq	.LC51(%rip), %rcx
+	call	printf
+	cmpl	$1, 16(%rbp)
+	jne	.L17
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC52(%rip), %rcx
+	call	printf
+.L17:
+	cmpl	$1, 16(%rbp)
+	jne	.L20
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rcx
+	call	usage
+	call	clock
+	subl	-8(%rbp), %eax
+	movl	%eax, -8(%rbp)
+	cvtsi2sdl	-8(%rbp), %xmm0
+	movsd	.LC53(%rip), %xmm1
+	divsd	%xmm1, %xmm0
+	movsd	%xmm0, -56(%rbp)
+	movsd	-56(%rbp), %xmm0
+	movq	-56(%rbp), %rax
+	movapd	%xmm0, %xmm1
+	movq	%rax, %rdx
+	leaq	.LC54(%rip), %rcx
+	call	printf
+	movl	$0, %eax
+	jmp	.L71
+.L49:
+	movl	-12(%rbp), %eax
+	movl	%eax, %edx
+	leaq	.LC55(%rip), %rcx
+	call	printf
+	movq	.refptr.optind(%rip), %rax
+	movl	(%rax), %eax
+	movl	%eax, %edx
+	leaq	.LC56(%rip), %rcx
+	call	printf
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC57(%rip), %rcx
+	call	printf
+	movq	.refptr.optopt(%rip), %rax
+	movl	(%rax), %eax
+	movl	%eax, %edx
+	leaq	.LC58(%rip), %rcx
+	call	printf
+	movq	.refptr.opterr(%rip), %rax
+	movl	(%rax), %eax
+	movl	%eax, %edx
+	leaq	.LC59(%rip), %rcx
+	call	printf
+	leaq	arg_struct(%rip), %rax
+	movb	$1, 12(%rax)
+	movl	-12(%rbp), %eax
+	subl	$58, %eax
+	cmpl	$61, %eax
+	ja	.L21
+	movl	%eax, %eax
+	leaq	0(,%rax,4), %rdx
+	leaq	.L23(%rip), %rax
+	movl	(%rdx,%rax), %eax
+	cltq
+	leaq	.L23(%rip), %rdx
+	addq	%rdx, %rax
+	jmp	*%rax
+	.section .rdata,"dr"
+	.align 4
+.L23:
+	.long	.L40-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L39-.L23
+	.long	.L21-.L23
+	.long	.L38-.L23
+	.long	.L32-.L23
+	.long	.L20-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L36-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L20-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L34-.L23
+	.long	.L21-.L23
+	.long	.L33-.L23
+	.long	.L32-.L23
+	.long	.L31-.L23
+	.long	.L21-.L23
+	.long	.L30-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L29-.L23
+	.long	.L21-.L23
+	.long	.L20-.L23
+	.long	.L20-.L23
+	.long	.L21-.L23
+	.long	.L20-.L23
+	.long	.L25-.L23
+	.long	.L24-.L23
+	.long	.L21-.L23
+	.long	.L21-.L23
+	.long	.L20-.L23
+	.text
+.L40:
+	movq	.refptr.optopt(%rip), %rax
+	movl	(%rax), %eax
+	movl	%eax, %edx
+	leaq	.LC60(%rip), %rcx
+	call	printf
+	movl	$1, -4(%rbp)
+	jmp	.L20
+.L34:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, bootstrap_file(%rip)
+	jmp	.L20
+.L39:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rcx
+	call	atoi
+	leaq	conversion_int(%rip), %rdx
+	movl	%eax, (%rdx)
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	testl	%eax, %eax
+	js	.L41
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	cmpl	$1, %eax
+	jle	.L42
+.L41:
+	movl	$2, -4(%rbp)
+	movl	-12(%rbp), %eax
+	movb	%al, -43(%rbp)
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rdx
+	movsbl	-43(%rbp), %eax
+	movq	%rdx, %r8
+	movl	%eax, %edx
+	leaq	.LC61(%rip), %rcx
+	call	printf
+.L42:
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	movl	%eax, %edx
+	leaq	arg_struct(%rip), %rax
+	movb	%dl, 8(%rax)
+	jmp	.L20
+.L33:
+	leaq	arg_struct(%rip), %rax
+	movb	$1, 12(%rax)
+	jmp	.L20
+.L38:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	leaq	.LC62(%rip), %rdx
+	movq	%rax, %rcx
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L43
+	jmp	.L20
+.L43:
+	movl	-12(%rbp), %eax
+	movl	%eax, %edx
+	leaq	.LC63(%rip), %rcx
+	call	printf
+	jmp	.L20
+.L32:
+	leaq	arg_struct(%rip), %rax
+	movb	$1, 13(%rax)
+	jmp	.L20
+.L31:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movl	$0, %r8d
+	movl	$0, %edx
+	movq	%rax, %rcx
+	call	strtol
+	movl	%eax, %edx
+	leaq	arg_struct(%rip), %rax
+	movb	%dl, 9(%rax)
+	jmp	.L20
+.L30:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, romheader_file(%rip)
+	jmp	.L20
+.L36:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC64(%rip), %rcx
+	call	printf
+	jmp	.L20
+.L29:
+	leaq	arg_struct(%rip), %rax
+	movb	$1, 14(%rax)
+	jmp	.L20
+.L25:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rcx
+	call	atoi
+	leaq	conversion_int(%rip), %rdx
+	movl	%eax, (%rdx)
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	testl	%eax, %eax
+	js	.L44
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	cmpl	$256, %eax
+	jle	.L45
+.L44:
+	movl	$2, -4(%rbp)
+	movl	-12(%rbp), %eax
+	movb	%al, -42(%rbp)
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rdx
+	movsbl	-42(%rbp), %eax
+	movq	%rdx, %r8
+	movl	%eax, %edx
+	leaq	.LC61(%rip), %rcx
+	call	printf
+.L45:
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %edx
+	leaq	arg_struct(%rip), %rax
+	movl	%edx, (%rax)
+	jmp	.L20
+.L24:
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rcx
+	call	atoi
+	leaq	conversion_int(%rip), %rdx
+	movl	%eax, (%rdx)
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	testl	%eax, %eax
+	js	.L46
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %eax
+	cmpl	$6, %eax
+	jle	.L47
+.L46:
+	movl	$2, -4(%rbp)
+	movl	-12(%rbp), %eax
+	movb	%al, -41(%rbp)
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rdx
+	movsbl	-41(%rbp), %eax
+	movq	%rdx, %r8
+	movl	%eax, %edx
+	leaq	.LC61(%rip), %rcx
+	call	printf
+.L47:
+	leaq	conversion_int(%rip), %rax
+	movl	(%rax), %edx
+	leaq	arg_struct(%rip), %rax
+	movl	%edx, 4(%rax)
+	jmp	.L20
+.L21:
+	cmpl	$63, -12(%rbp)
+	je	.L48
+	movl	-12(%rbp), %eax
+	movl	%eax, %edx
+	leaq	.LC65(%rip), %rcx
+	call	printf
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	testq	%rax, %rax
+	je	.L48
+	movq	.refptr.optarg(%rip), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC66(%rip), %rcx
+	call	printf
+.L48:
+	movl	$-1, -4(%rbp)
+	nop
+.L20:
+	movq	24(%rbp), %rax
+	leaq	.LC67(%rip), %r8
+	movq	%rax, %rdx
+	movl	16(%rbp), %ecx
+	call	getopt
+	movl	%eax, -12(%rbp)
+	cmpl	$-1, -12(%rbp)
+	jne	.L49
+	movq	.refptr.optind(%rip), %rax
+	movl	(%rax), %eax
+	cmpl	%eax, 16(%rbp)
+	jle	.L50
+	movq	.refptr.optind(%rip), %rax
+	movl	(%rax), %eax
+	cltq
+	leaq	0(,%rax,8), %rdx
+	movq	24(%rbp), %rax
+	addq	%rdx, %rax
+	movq	(%rax), %rax
+	movq	%rax, spec_file(%rip)
+.L50:
+	movq	spec_file(%rip), %rax
+	movl	$4, %edx
+	movq	%rax, %rcx
+	call	file_exists_current_dir
+	xorl	$1, %eax
+	testb	%al, %al
+	je	.L51
+	movl	$3, -4(%rbp)
+	movq	spec_file(%rip), %rax
+	movq	%rax, %rdx
+	leaq	.LC68(%rip), %rcx
+	call	printf
+.L51:
+	movq	romheader_file(%rip), %rax
+	movl	$4, %edx
+	movq	%rax, %rcx
+	call	file_exists
+	xorl	$1, %eax
+	testb	%al, %al
+	je	.L52
+	movl	$3, -4(%rbp)
+	movq	romheader_file(%rip), %rax
+	movq	%rax, %rdx
+	leaq	.LC68(%rip), %rcx
+	call	printf
+.L52:
+	movq	output_file(%rip), %rax
+	movl	$0, %edx
+	movq	%rax, %rcx
+	call	file_exists
+	testb	%al, %al
+	je	.L53
+	movq	output_file(%rip), %rax
+	movl	$2, %edx
+	movq	%rax, %rcx
+	call	file_exists
+	xorl	$1, %eax
+	testb	%al, %al
+	je	.L53
+	movl	$3, -4(%rbp)
+	movq	output_file(%rip), %rax
+	movq	%rax, %rdx
+	leaq	.LC69(%rip), %rcx
+	call	printf
+.L53:
+	movq	bootstrap_file(%rip), %rax
+	movl	$4, %edx
+	movq	%rax, %rcx
+	call	file_exists
+	xorl	$1, %eax
+	testb	%al, %al
+	je	.L54
+	movl	$3, -4(%rbp)
+	movq	bootstrap_file(%rip), %rax
+	movq	%rax, %rdx
+	leaq	.LC68(%rip), %rcx
+	call	printf
+.L54:
+	movq	pif_file(%rip), %rax
+	movl	$4, %edx
+	movq	%rax, %rcx
+	call	file_exists
+	xorl	$1, %eax
+	testb	%al, %al
+	je	.L55
+	movl	$3, -4(%rbp)
+	movq	pif_file(%rip), %rax
+	movq	%rax, %rdx
+	leaq	.LC68(%rip), %rcx
+	call	printf
+.L55:
+	movq	font_file(%rip), %rax
+	movl	$4, %edx
+	movq	%rax, %rcx
+	call	file_exists
+	xorl	$1, %eax
+	testb	%al, %al
+	je	.L56
+	movl	$3, -4(%rbp)
+	movq	font_file(%rip), %rax
+	movq	%rax, %rdx
+	leaq	.LC68(%rip), %rcx
+	call	printf
+.L56:
+	cmpl	$0, -4(%rbp)
+	je	.L57
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rcx
+	call	usage
+	call	clock
+	subl	-8(%rbp), %eax
+	movl	%eax, -8(%rbp)
+	cvtsi2sdl	-8(%rbp), %xmm0
+	movsd	.LC53(%rip), %xmm1
+	divsd	%xmm1, %xmm0
+	movsd	%xmm0, -40(%rbp)
+	movsd	-40(%rbp), %xmm0
+	movq	-40(%rbp), %rax
+	movapd	%xmm0, %xmm1
+	movq	%rax, %rdx
+	leaq	.LC54(%rip), %rcx
+	call	printf
+	movl	-4(%rbp), %eax
+	jmp	.L71
+.L57:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L58
+	movq	romheader_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC70(%rip), %rcx
+	call	printf
+	movq	pif_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC71(%rip), %rcx
+	call	printf
+	movq	font_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC72(%rip), %rcx
+	call	printf
+	movq	bootstrap_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC73(%rip), %rcx
+	call	printf
+	movq	spec_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC74(%rip), %rcx
+	call	printf
+	movq	output_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC75(%rip), %rcx
+	call	printf
+.L58:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L59
+	movq	spec_file(%rip), %rcx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	leaq	.LC78(%rip), %rdx
+	movq	%rdx, 32(%rsp)
+	movq	%rcx, %r9
+	leaq	.LC76(%rip), %r8
+	movq	%rax, %rdx
+	leaq	.LC77(%rip), %rcx
+	call	printf
+.L59:
+	leaq	.LC79(%rip), %rax
+	movq	%rax, -80(%rbp)
+	movq	spec_file(%rip), %rax
+	movq	%rax, -72(%rbp)
+	leaq	-80(%rbp), %rax
+	movq	%rax, %rdx
+	leaq	.LC76(%rip), %rcx
+	call	exec_and_wait
+	movl	%eax, -16(%rbp)
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L60
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC80(%rip), %rcx
+	call	printf
+.L60:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L61
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC81(%rip), %rcx
+	call	printf
+.L61:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L62
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	leaq	.LC82(%rip), %r9
+	leaq	.LC83(%rip), %r8
+	movq	%rax, %rdx
+	leaq	.LC84(%rip), %rcx
+	call	printf
+.L62:
+	leaq	.LC85(%rip), %rax
+	movq	%rax, -112(%rbp)
+	leaq	.LC82(%rip), %rax
+	movq	%rax, -104(%rbp)
+	leaq	.LC86(%rip), %rax
+	movq	%rax, -96(%rbp)
+	movq	output_file(%rip), %rax
+	movq	%rax, -88(%rbp)
+	leaq	-112(%rbp), %rax
+	movq	%rax, %rdx
+	leaq	.LC83(%rip), %rcx
+	call	execvp
+	movl	%eax, -20(%rbp)
+	cmpl	$0, -20(%rbp)
+	je	.L63
+	movl	$0, %ecx
+	call	perror
+.L63:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L64
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC87(%rip), %rcx
+	call	printf
+.L64:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L65
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	leaq	.LC91(%rip), %rdx
+	movq	%rdx, 32(%rsp)
+	leaq	.LC88(%rip), %r9
+	leaq	.LC89(%rip), %r8
+	movq	%rax, %rdx
+	leaq	.LC90(%rip), %rcx
+	call	printf
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdx
+	leaq	.LC92(%rip), %rcx
+	call	printf
+.L65:
+	leaq	.LC88(%rip), %rax
+	movq	%rax, -128(%rbp)
+	leaq	.LC91(%rip), %rax
+	movq	%rax, -120(%rbp)
+	leaq	-128(%rbp), %rax
+	movq	%rax, %rdx
+	leaq	.LC89(%rip), %rcx
+	call	execvp
+	movl	%eax, -24(%rbp)
+	cmpl	$0, -24(%rbp)
+	je	.L66
+	movl	$0, %ecx
+	call	perror
+.L66:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L67
+	movq	output_file(%rip), %rcx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	leaq	.LC95(%rip), %rdx
+	movq	%rdx, 32(%rsp)
+	movq	%rcx, %r9
+	leaq	.LC93(%rip), %r8
+	movq	%rax, %rdx
+	leaq	.LC94(%rip), %rcx
+	call	printf
+.L67:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L68
+	movq	romheader_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC96(%rip), %rcx
+	call	printf
+.L68:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L69
+	movq	bootstrap_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC96(%rip), %rcx
+	call	printf
+.L69:
+	leaq	arg_struct(%rip), %rax
+	movzbl	12(%rax), %eax
+	testb	%al, %al
+	je	.L70
+	movq	font_file(%rip), %rdx
+	movq	24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rdx, %r8
+	movq	%rax, %rdx
+	leaq	.LC96(%rip), %rcx
+	call	printf
+.L70:
+	leaq	.LC97(%rip), %rcx
+	call	puts
+	call	clock
+	subl	-8(%rbp), %eax
+	movl	%eax, -8(%rbp)
+	cvtsi2sdl	-8(%rbp), %xmm0
+	movsd	.LC53(%rip), %xmm1
+	divsd	%xmm1, %xmm0
+	movsd	%xmm0, -32(%rbp)
+	movsd	-32(%rbp), %xmm0
+	movq	-32(%rbp), %rax
+	movapd	%xmm0, %xmm1
+	movq	%rax, %rdx
+	leaq	.LC54(%rip), %rcx
+	call	printf
+	movl	-4(%rbp), %eax
+.L71:
+	addq	$176, %rsp
+	popq	%rbp
+	ret
+	.seh_endproc
+	.section .rdata,"dr"
+	.align 8
+.LC53:
+	.long	0
+	.long	1083129856
+	.ident	"GCC: (GNU) 9.1.0"
+	.def	fork;	.scl	2;	.type	32;	.endef
+	.def	execvp;	.scl	2;	.type	32;	.endef
+	.def	_exit;	.scl	2;	.type	32;	.endef
+	.def	printf;	.scl	2;	.type	32;	.endef
+	.def	access;	.scl	2;	.type	32;	.endef
+	.def	getcwd;	.scl	2;	.type	32;	.endef
+	.def	strlen;	.scl	2;	.type	32;	.endef
+	.def	puts;	.scl	2;	.type	32;	.endef
+	.def	clock;	.scl	2;	.type	32;	.endef
+	.def	atoi;	.scl	2;	.type	32;	.endef
+	.def	strcmp;	.scl	2;	.type	32;	.endef
+	.def	strtol;	.scl	2;	.type	32;	.endef
+	.def	getopt;	.scl	2;	.type	32;	.endef
+	.def	perror;	.scl	2;	.type	32;	.endef
+	.section	.rdata$.refptr.opterr, "dr"
+	.globl	.refptr.opterr
+	.linkonce	discard
+.refptr.opterr:
+	.quad	opterr
+	.section	.rdata$.refptr.optopt, "dr"
+	.globl	.refptr.optopt
+	.linkonce	discard
+.refptr.optopt:
+	.quad	optopt
+	.section	.rdata$.refptr.optarg, "dr"
+	.globl	.refptr.optarg
+	.linkonce	discard
+.refptr.optarg:
+	.quad	optarg
+	.section	.rdata$.refptr.optind, "dr"
+	.globl	.refptr.optind
+	.linkonce	discard
+.refptr.optind:
+	.quad	optind

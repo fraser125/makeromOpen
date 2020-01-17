@@ -1,0 +1,58 @@
+Inspired By:
+rom image link editor version 1.01 (gcc32) Copyright (c) 1997 Hudson/KMC
+	argc 3
+	opt: d
+	optind: 2
+	optarg: (null)
+	optopt: ?
+	opterr: 1
+	PATH MAX: 260
+	File name: specx
+	File name length: 5
+	Current working dir: C:\projects_jwall\makerom
+	dir name length: 25
+	Path is Null 0
+	Full dir and file: C:\projects_jwall\makerom\specx
+	Filename : C:\projects_jwall\makerom\specx
+	File Exists: 1
+	File Read : 1
+	File Write : 1
+	File Execute : 1
+	Filename : romheader
+	File Exists: 1
+	File Read : 1
+	File Write : 1
+	File Execute : 1
+	Filename : rom
+	File Exists: 0
+	File Read : 0
+	File Write : 0
+	File Execute : 0
+	Filename : Boot
+	File Exists: 1
+	File Read : 1
+	File Write : 1
+	File Execute : 1
+	Filename : pif2Boot
+	File Exists: 1
+	File Read : 1
+	File Write : 1
+	File Execute : 1
+	Filename : font
+	File Exists: 1
+	File Read : 1
+	File Write : 1
+	File Execute : 1
+makerom: using rom header: romheader
+makerom: using pif2Boot: pif2Boot
+makerom: using font file: font
+makerom: using boot strap: Boot
+makerom: using spec file: specx
+makerom: using output file: rom
+makerom: cpp -E -D LANGUAGE_MAKEROM -P -x c -o spec.out specx 
+	spawning status 0
+	execute status 0
+makerom: creating command file
+Create Command result: -1
+Elapsed: 0.440000 seconds to execute 
+Failed

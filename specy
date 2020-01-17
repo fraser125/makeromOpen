@@ -1,0 +1,18 @@
+beginseg
+        name "program"
+        flags BOOT OBJECT
+        entry mainproc
+        stack mainThreadStack + 0x1000
+		number 250
+		maxsize 64
+        include "rotate.o"
+endseg
+
+beginseg
+        name "static"
+        flags RAW
+        number 1
+        include "square.o"
+        stack mainThreadStack + 0x1000
+        include "rotate2.o"
+endseg
